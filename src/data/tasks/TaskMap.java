@@ -66,6 +66,17 @@ public abstract class TaskMap<E extends Task> {
 	}
 
 	/**
+	 * 获取任务
+	 * 
+	 * @param info
+	 *            任务内容
+	 * @return 一个任务,一天的任务,一周的任务...
+	 */
+	public E get(String info) {
+		return tasks.get(info);
+	}
+
+	/**
 	 * 添加任务
 	 * 
 	 * @param e
@@ -73,6 +84,7 @@ public abstract class TaskMap<E extends Task> {
 	 */
 	public void add(E e) {
 		tasks.put(e.info, e);
+		this.writeTasks(); // 已修改,保存修改
 	}
 
 	/**
@@ -83,5 +95,6 @@ public abstract class TaskMap<E extends Task> {
 	 */
 	public void remove(String info) {
 		tasks.remove(info);
+		this.writeTasks();// 已修改,保存修改
 	}
 }

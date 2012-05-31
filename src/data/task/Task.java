@@ -49,4 +49,20 @@ public abstract class Task implements Serializable {
 	public Task(int type) {
 		this.type = type;
 	}
+
+	/**
+	 * 任务所花时间增长一段<br>
+	 * 可能需要调用上级的add
+	 * 
+	 * @param time
+	 *            花费的一段时间(单位:毫秒)
+	 */
+	public abstract void add(long time);
+
+	/**
+	 * 任务完成
+	 */
+	public void finished() {
+		this.finished = true;
+	}
 }

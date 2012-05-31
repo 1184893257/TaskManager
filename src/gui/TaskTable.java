@@ -34,7 +34,10 @@ public class TaskTable extends JTable implements ActionListener {
 	protected JPopupMenu menu2;
 
 	public TaskTable(Today today) {
-		super(new TaskModel());
+		super(new TaskModel(today));
+
+		// 表格不显示纵向分割线
+		this.setShowVerticalLines(false);
 
 		// 表格也需使用运行信息
 		this.today = today;

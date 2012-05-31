@@ -13,12 +13,12 @@ public class Today {
 	/**
 	 * 今日的任务
 	 */
-	protected Day today;
+	public Day tasks;
 	/**
 	 * 指代当前任务的标记<br>
 	 * 为null表示当前无任务
 	 */
-	protected Date cur;
+	public String cur;
 	/**
 	 * 当前任务在激活之前已用时间
 	 */
@@ -30,7 +30,7 @@ public class Today {
 
 	public Today() {
 		startup = new Date().getTime();
-		today=new Day();
+		tasks=new Day();
 	}
 
 	/**
