@@ -19,33 +19,45 @@ public class TaskModel extends AbstractTableModel {
 	 * 表格数据模型的构造函数
 	 */
 	public TaskModel() {
-		data = new Object[][] { { null, "A", "1:00:00", null },
-				{ null, "B", "1:30:00", null } };
+		data = new Object[][] { { false, "A", "1:00:00", false },
+				{ false, "B", "1:30:00", false },
+				{ false, "C", "2:30:00", false } };
 	}
 
+	@Override
 	public int getColumnCount() {
 		return columnNames.length;
 	}
 
+	@Override
 	public int getRowCount() {
 		return data.length;
 	}
 
+	@Override
 	public Object getValueAt(int row, int col) {
 		return data[row][col];
 	}
 
+	@Override
 	public String getColumnName(int col) {
 		return columnNames[col];
 	}
 
+	@Override
 	public Class<? extends Object> getColumnClass(int c) {
 		return getValueAt(0, c).getClass();
 	}
 
+	@Override
 	public boolean isCellEditable(int row, int col) {
 		if (col == 0)
 			return true;
 		return false;
+	}
+
+	@Override
+	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+		data[rowIndex][columnIndex] = aValue;
 	}
 }

@@ -1,17 +1,21 @@
 package gui;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Date;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 
 import data.Today;
 
 import static gui.FormatTime.*;
 
-public class Top extends JFrame {
+public class Top extends JFrame implements ActionListener {
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -22,6 +26,10 @@ public class Top extends JFrame {
 	 * 显示整体信息
 	 */
 	protected JLabel info;
+	/**
+	 * 给标签提供的右键菜单
+	 */
+	protected JPopupMenu menu;
 
 	public Top() {
 		super("今日事今日毕");
@@ -32,6 +40,7 @@ public class Top extends JFrame {
 		// 创建显示组件
 		info = new JLabel("");
 		updateLabel();
+		buildMenu();
 		TaskTable table = new TaskTable(today);
 
 		// 添加标签的点击事件,点击一次更新一次
@@ -42,12 +51,20 @@ public class Top extends JFrame {
 				updateLabel();
 			}
 
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				if (e.isPopupTrigger())
+					menu.show(e.getComponent(), e.getX(), e.getY());
+			}
+
 		});
 
 		add(info, "North");
 		// add(new JScrollPane(table), "Center");
 		add(table, "Center");
 
+		this.setUndecorated(true);
+		this.setLocation(200, 200);
 		pack();
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 	}
@@ -66,6 +83,40 @@ public class Top extends JFrame {
 			text += "当前任务已用" + HMS(today.getCurUsed()) + "</html>";
 		}
 		info.setText(text);
+	}
+
+	/**
+	 * 建立标签的右键菜单
+	 */
+	public void buildMenu() {
+		menu = new JPopupMenu();
+
+		String[] cmds = { "退出", "变大", "变小" };
+		int i;
+		JMenuItem t;
+		for (i = 0; i < cmds.length; ++i) {
+			t = new JMenuItem(cmds[i]);
+			t.addActionListener(this);
+			menu.add(t);
+		}
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		String cmd = e.getActionCommand();
+		if (cmd.equals("退出")) {
+			this.dispose();
+		} else if (cmd.equals("变大")) {
+			this.dispose();
+			this.setUndecorated(false);
+			pack();
+			this.setVisible(true);
+		}else if(cmd.equals("变小")){
+			this.dispose();
+			this.setUndecorated(true);
+			pack();
+			this.setVisible(true);
+		}
 	}
 
 	public static void main(String[] args) {
