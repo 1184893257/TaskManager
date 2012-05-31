@@ -1,4 +1,4 @@
-package data;
+package data.tasks;
 
 import java.util.*;
 
