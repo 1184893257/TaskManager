@@ -9,6 +9,10 @@ public class Today {
 	protected long startup;
 
 	/**
+	 * 今日的任务
+	 */
+	protected Day today;
+	/**
 	 * 指代当前任务的标记<br>
 	 * 为null表示当前无任务
 	 */
@@ -24,6 +28,7 @@ public class Today {
 
 	public Today() {
 		startup = new Date().getTime();
+		today=new Day();
 	}
 
 	/**

@@ -32,7 +32,7 @@ public class Top extends JFrame {
 		// 创建显示组件
 		info = new JLabel("");
 		updateLabel();
-		TaskTable table = new TaskTable();
+		TaskTable table = new TaskTable(today);
 
 		// 添加标签的点击事件,点击一次更新一次
 		info.addMouseListener(new MouseAdapter() {

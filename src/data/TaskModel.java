@@ -16,7 +16,7 @@ public class TaskModel extends AbstractTableModel {
 	Object[][] data;
 
 	/**
-	 * 构造函数
+	 * 表格数据模型的构造函数
 	 */
 	public TaskModel() {
 		data = new Object[][] { { null, "A", "1:00:00", null },

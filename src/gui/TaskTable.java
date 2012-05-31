@@ -11,6 +11,7 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 
 import data.TaskModel;
+import data.Today;
 
 /**
  * 显示任务表格的组件
@@ -20,9 +21,16 @@ import data.TaskModel;
  */
 public class TaskTable extends JTable {
 	private static final long serialVersionUID = 1L;
+	
+	/**
+	 * 运行时数据
+	 */
+	protected Today today;
 
-	public TaskTable() {
+	public TaskTable(Today today) {
 		super(new TaskModel());
+		
+		this.today=today;
 
 		//设置激活单选按钮
 		TableCell cell0 = new TableCell();
