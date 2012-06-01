@@ -72,7 +72,7 @@ public abstract class TaskMap<E extends Task> {
 	 *            任务内容
 	 * @return 一个任务,一天的任务,一周的任务...
 	 */
-	public E get(String info) {
+	public E get(Object info) {
 		return tasks.get(info);
 	}
 

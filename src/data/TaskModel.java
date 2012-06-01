@@ -96,7 +96,7 @@ public class TaskModel extends AbstractTableModel {
 		 */
 		if (rowIndex == 3) {
 			// 当前任务完成,统计时间,结束任务,写入更改
-			task = today.tasks.get((String) data[rowIndex][1]);
+			task = today.tasks.get(data[rowIndex][1]);
 			today.cur = null; // 现在没任务
 			task.add(new Date().getTime() - today.begin.getTime());
 			task.finished();
@@ -118,7 +118,7 @@ public class TaskModel extends AbstractTableModel {
 		}
 		// 暂停一个任务
 		else {
-			task = today.tasks.get((String) data[rowIndex][1]);
+			task = today.tasks.get(data[rowIndex][1]);
 			today.cur = null;
 			task.add(new Date().getTime() - today.begin.getTime());
 			today.tasks.writeTasks();
