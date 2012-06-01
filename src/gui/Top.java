@@ -2,6 +2,7 @@ package gui;
 
 import inter.UpdateTable;
 
+import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -38,6 +39,10 @@ public class Top extends JFrame implements ActionListener, UpdateTable {
 	 * 移动开始时设置的点
 	 */
 	protected Point origin;
+	/**
+	 * 显示任务表格
+	 */
+	protected TaskTable table;
 
 	public Top() {
 		super("今日事今日毕");
@@ -49,7 +54,7 @@ public class Top extends JFrame implements ActionListener, UpdateTable {
 		info = new JLabel("");
 		updateLabel();
 		buildMenu();
-		TaskTable table = new TaskTable(today, this, this);
+		table = new TaskTable(today, this, this);
 
 		// 添加标签的点击事件,点击一次更新一次
 		info.addMouseListener(new MouseAdapter() {
@@ -136,8 +141,10 @@ public class Top extends JFrame implements ActionListener, UpdateTable {
 			pack();
 			this.setVisible(true);
 		} else if (cmd.equals("变小")) {
+			Dimension newsize = table.getSize();
 			this.dispose();
 			this.setUndecorated(true);
+			table.setPreferredSize(newsize);
 			pack();
 			this.setVisible(true);
 		}
