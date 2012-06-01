@@ -15,6 +15,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableColumnModel;
 
 import data.TaskModel;
 import data.Today;
@@ -50,14 +51,17 @@ public class TaskTable extends JTable implements ActionListener {
 	 */
 	protected MyRender render;
 	/**
-	 * 顶层窗体<br>
-	 * 添加任务弹出对话框需要
-	 */
-	protected Frame top;
-	/**
 	 * 当表格有大小变更时,调用updater重绘表格
 	 */
 	protected UpdateTable updater;
+	/**
+	 * 提供给弹出窗体frame用的主窗体对象
+	 */
+	protected Frame top;
+	/**
+	 * 添加任务的弹出窗体
+	 */
+	protected AddTask frame;
 
 	public TaskTable(Today today, Frame top, UpdateTable updater) {
 		super(new TaskModel(today, updater));
@@ -110,13 +114,21 @@ public class TaskTable extends JTable implements ActionListener {
 
 		});
 
+		TableColumnModel colModel = this.getColumnModel();
+		colModel.getColumn(0).setPreferredWidth(20);
+		colModel.getColumn(1).setPreferredWidth(300);
+		colModel.getColumn(2).setPreferredWidth(100);
+		colModel.getColumn(3).setPreferredWidth(20);
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String cmd = e.getActionCommand();
 		if (cmd.equals("添加")) {
-			AddTask frame = new AddTask(top);
+			if (frame == null) {
+				frame = new AddTask(top);
+				frame.pack();
+			}
 			frame.setVisible(true);
 			DayTask newtask = new DayTask(frame.info, frame.needTime);
 

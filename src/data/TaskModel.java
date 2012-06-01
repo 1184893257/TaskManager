@@ -54,8 +54,9 @@ public class TaskModel extends AbstractTableModel {
 		DayTask task;
 		for (i = 0; i < size; ++i) {
 			task = it.next().getValue();
-			data[i] = new Object[] { false, task.info, HMS(task.needTime),
-					false };
+			data[i] = new Object[] { false, task.info,
+					task.finished ? HMS(task.lastTime) : HMS(task.needTime),
+					task.finished };
 		}
 	}
 
@@ -143,6 +144,10 @@ public class TaskModel extends AbstractTableModel {
 			task.add(new Date().getTime() - today.begin.getTime());
 			task.finished();
 			today.tasks.writeTasks();
+
+			// 清除激活选择框的选中状态
+			data[rowIndex][0] = false;
+			this.fireTableCellUpdated(rowIndex, 0);
 		}
 
 		/*
@@ -164,6 +169,8 @@ public class TaskModel extends AbstractTableModel {
 
 		// 刷新本行的任务内容的显示,这样立刻就看到状态更改了
 		this.fireTableCellUpdated(rowIndex, 1);
+
+		// 标签可能因为此次table的修改而变化大小
 		updater.updateTaskShow();
 	}
 }

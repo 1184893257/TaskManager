@@ -95,7 +95,7 @@ public class AddTask extends JDialog implements ActionListener {
 		layout.setConstraints(ok, c);
 		add(ok);
 		
-		pack();
+		//pack();
 	}
 
 	@Override
