@@ -1,6 +1,8 @@
 package data.tasks;
 
 import java.io.*;
+import java.util.Iterator;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import data.task.Task;
@@ -63,6 +65,24 @@ public abstract class TaskMap<E extends Task> {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * 返回任务集合中任务的个数
+	 * 
+	 * @return
+	 */
+	public int getSize() {
+		return tasks.size();
+	}
+
+	/**
+	 * 获得任务集合的迭代器
+	 * 
+	 * @return
+	 */
+	public Iterator<Entry<String, E>> iterator() {
+		return tasks.entrySet().iterator();
 	}
 
 	/**

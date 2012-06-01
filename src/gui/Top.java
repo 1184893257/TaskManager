@@ -1,5 +1,7 @@
 package gui;
 
+import inter.UpdateTable;
+
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,7 +19,7 @@ import data.Today;
 
 import static gui.FormatTime.*;
 
-public class Top extends JFrame implements ActionListener {
+public class Top extends JFrame implements ActionListener, UpdateTable {
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -47,7 +49,7 @@ public class Top extends JFrame implements ActionListener {
 		info = new JLabel("");
 		updateLabel();
 		buildMenu();
-		TaskTable table = new TaskTable(today);
+		TaskTable table = new TaskTable(today, this, this);
 
 		// 添加标签的点击事件,点击一次更新一次
 		info.addMouseListener(new MouseAdapter() {
@@ -102,7 +104,7 @@ public class Top extends JFrame implements ActionListener {
 		String complete = "今日已完成";
 		text += start + "<br>" + total + "<br>" + complete;
 		if (today.isWorking()) {
-			text += "当前任务已用" + HMS(today.getCurUsed()) + "</html>";
+			text += "<br>当前任务已用" + HMS(today.getCurUsed()) + "</html>";
 		}
 		info.setText(text);
 	}
@@ -139,6 +141,12 @@ public class Top extends JFrame implements ActionListener {
 			pack();
 			this.setVisible(true);
 		}
+	}
+
+	@Override
+	public void updateTaskShow() {
+		this.updateLabel();
+		pack();
 	}
 
 	public static void main(String[] args) {

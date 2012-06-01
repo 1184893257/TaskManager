@@ -5,6 +5,7 @@ import inter.UpdateTable;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -17,6 +18,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 
 import data.TaskModel;
 import data.Today;
+import data.task.DayTask;
 
 /**
  * 显示任务表格的组件
@@ -24,9 +26,13 @@ import data.Today;
  * @author lqy
  * 
  */
-public class TaskTable extends JTable implements ActionListener, UpdateTable {
+public class TaskTable extends JTable implements ActionListener {
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * 表格的数据模型
+	 */
+	protected TaskModel model;
 	/**
 	 * 运行时数据
 	 */
@@ -43,9 +49,22 @@ public class TaskTable extends JTable implements ActionListener, UpdateTable {
 	 * 第1列的渲染器
 	 */
 	protected MyRender render;
+	/**
+	 * 顶层窗体<br>
+	 * 添加任务弹出对话框需要
+	 */
+	protected Frame top;
+	/**
+	 * 当表格有大小变更时,调用updater重绘表格
+	 */
+	protected UpdateTable updater;
 
-	public TaskTable(Today today) {
-		super(new TaskModel(today));
+	public TaskTable(Today today, Frame top, UpdateTable updater) {
+		super(new TaskModel(today, updater));
+
+		model = (TaskModel) this.getModel();
+		this.top = top;
+		this.updater = updater;
 
 		// 表格不显示纵向分割线
 		this.setShowVerticalLines(false);
@@ -95,6 +114,17 @@ public class TaskTable extends JTable implements ActionListener, UpdateTable {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		String cmd = e.getActionCommand();
+		if (cmd.equals("添加")) {
+			AddTask frame = new AddTask(top);
+			frame.setVisible(true);
+			DayTask newtask = new DayTask(frame.info, frame.needTime);
+
+			/* 表格模型添加一定要在任务集合添加之后,因为表格显示的时候要从任务集合中查找对应任务 */
+			today.tasks.add(newtask);
+			model.addTask(newtask);
+			updater.updateTaskShow();
+		}
 	}
 
 	/**
@@ -116,7 +146,7 @@ public class TaskTable extends JTable implements ActionListener, UpdateTable {
 					hasFocus, row, column);
 
 			// 如果是当前任务,则加粗
-			if (today.cur.equals(value)) {
+			if (today.cur != null && today.cur.equals(value)) {
 				ans.setFont(ans.getFont().deriveFont(Font.BOLD));
 				ans.setForeground(Color.red);
 			}
@@ -133,10 +163,5 @@ public class TaskTable extends JTable implements ActionListener, UpdateTable {
 			return ans;
 		}
 
-	}
-
-	@Override
-	public void updateTaskShow() {
-		this.updateUI();
 	}
 }

@@ -1,10 +1,16 @@
 package data;
 
+import inter.UpdateTable;
+
 import java.util.Date;
+import java.util.Iterator;
+import java.util.Map.Entry;
 
 import javax.swing.table.AbstractTableModel;
 
 import data.task.DayTask;
+
+import static gui.FormatTime.*;
 
 /**
  * 表格的数据模型<br>
@@ -28,15 +34,48 @@ public class TaskModel extends AbstractTableModel {
 	 * 运行时数据
 	 */
 	protected Today today;
+	/**
+	 * 更新表格标签<br>
+	 * 点击的时候也更新标签的显示
+	 */
+	protected UpdateTable updater;
 
 	/**
 	 * 表格数据模型的构造函数
 	 */
-	public TaskModel(Today today) {
+	public TaskModel(Today today, UpdateTable updater) {
+		this.updater = updater;
 		this.today = today;
-		data = new Object[][] { { false, "A", "1:00:00", false },
-				{ false, "B", "1:30:00", false },
-				{ false, "C", "2:30:00", false } };
+		final int size = today.tasks.getSize();
+		data = new Object[size][columnNames.length];
+
+		Iterator<Entry<String, DayTask>> it = today.tasks.iterator();
+		int i;
+		DayTask task;
+		for (i = 0; i < size; ++i) {
+			task = it.next().getValue();
+			data[i] = new Object[] { false, task.info, HMS(task.needTime),
+					false };
+		}
+	}
+
+	/**
+	 * 添加一个任务到表格最后一行
+	 * 
+	 * @param task
+	 */
+	public void addTask(DayTask task) {
+		final int old = data.length;
+		final int cols = columnNames.length;
+		Object[][] newdata = new Object[old + 1][cols];
+		int i;
+		// 直接复制旧的二维数组
+		for (i = 0; i < old; ++i)
+			newdata[i] = data[i];
+		// 在新的一行添加新的任务
+		newdata[i] = new Object[] { false, task.info, HMS(task.needTime), false };
+		data = newdata;
+		this.fireTableRowsInserted(old, old);
 	}
 
 	@Override
@@ -71,10 +110,13 @@ public class TaskModel extends AbstractTableModel {
 			return false;
 
 		// 没有任务的时候,激活未完成任务是可以的
-		if (!today.isWorking()
-				&& !today.tasks.get((String) data[row][1]).finished)
-			if (col == 0)
-				return true;
+		if (!today.isWorking())
+			if (!today.tasks.get((String) data[row][1]).finished)
+				if (col == 0)
+					return true;
+				else
+					// 点的是第3列
+					return false;
 			else
 				return false;
 
@@ -94,17 +136,13 @@ public class TaskModel extends AbstractTableModel {
 		/*
 		 * 第3列是任务完成的标志,且只可能是正在运行的任务(别的这个键按不了) 所以是当前任务完成了
 		 */
-		if (rowIndex == 3) {
+		if (columnIndex == 3) {
 			// 当前任务完成,统计时间,结束任务,写入更改
 			task = today.tasks.get(data[rowIndex][1]);
 			today.cur = null; // 现在没任务
 			task.add(new Date().getTime() - today.begin.getTime());
 			task.finished();
 			today.tasks.writeTasks();
-
-			// TODO 更新表格,行列没变,只是更改各行状态
-
-			// XXX 显示信息
 		}
 
 		/*
@@ -113,8 +151,8 @@ public class TaskModel extends AbstractTableModel {
 		else if ((boolean) aValue) {
 			// 开启一个任务
 			today.cur = (String) data[rowIndex][1];
-
-			// TODO 更新表格,行列没变,只是更改各行状态
+			today.begin = new Date();
+			today.used = today.tasks.get(today.cur).lastTime;
 		}
 		// 暂停一个任务
 		else {
@@ -122,8 +160,10 @@ public class TaskModel extends AbstractTableModel {
 			today.cur = null;
 			task.add(new Date().getTime() - today.begin.getTime());
 			today.tasks.writeTasks();
-
-			// TODO 更新显示
 		}
+
+		// 刷新本行的任务内容的显示,这样立刻就看到状态更改了
+		this.fireTableCellUpdated(rowIndex, 1);
+		updater.updateTaskShow();
 	}
 }

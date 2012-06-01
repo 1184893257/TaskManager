@@ -8,7 +8,7 @@ public class Today {
 	/**
 	 * 本程序的开启时刻
 	 */
-	protected long startup;
+	public long startup;
 
 	/**
 	 * 今日的任务
@@ -22,11 +22,11 @@ public class Today {
 	/**
 	 * 当前任务在激活之前已用时间
 	 */
-	protected long used;
+	public long used;
 	/**
 	 * 当前任务的激活时刻
 	 */
-	protected Date begin;
+	public Date begin;
 
 	public Today() {
 		startup = new Date().getTime();
