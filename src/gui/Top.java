@@ -67,6 +67,7 @@ public class Top extends JFrame implements ActionListener, UpdateTable {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				updateLabel();
+				pack();
 			}
 
 			@Override
@@ -120,7 +121,7 @@ public class Top extends JFrame implements ActionListener, UpdateTable {
 	public void buildMenu() {
 		menu = new JPopupMenu();
 
-		String[] cmds = { "退出", "变大", "变小" };
+		String[] cmds = { "退出", "变大", "变小", "最小" };
 		int i;
 		JMenuItem t;
 		for (i = 0; i < cmds.length; ++i) {
@@ -135,19 +136,43 @@ public class Top extends JFrame implements ActionListener, UpdateTable {
 		String cmd = e.getActionCommand();
 		if (cmd.equals("退出")) {
 			this.dispose();
-		} else if (cmd.equals("变大")) {
+		} else if (cmd.equals("变大")) { // 最大模式
 			this.dispose();
 			this.setUndecorated(false);
-			pack();
+			this.addTable();
+			this.updateTaskShow();
 			this.setVisible(true);
-		} else if (cmd.equals("变小")) {
+		} else if (cmd.equals("变小")) {// 一般模式
 			Dimension newsize = table.getSize();
 			this.dispose();
 			this.setUndecorated(true);
+			this.addTable();
 			table.setPreferredSize(newsize);
-			pack();
+			this.updateTaskShow();
+			this.setVisible(true);
+		} else if (cmd.equals("最小")) {// 最小模式
+			this.dispose();
+			this.setUndecorated(true);
+			this.removeTable();
+			this.updateTaskShow();
 			this.setVisible(true);
 		}
+	}
+
+	/**
+	 * 如果table在面板中的话,移除table
+	 */
+	protected void removeTable() {
+		if (this.isAncestorOf(table))
+			this.remove(table);
+	}
+
+	/**
+	 * 如果table不在面板中的话,加入table
+	 */
+	protected void addTable() {
+		if (!this.isAncestorOf(table))
+			this.add(table, "Center");
 	}
 
 	@Override
@@ -159,5 +184,6 @@ public class Top extends JFrame implements ActionListener, UpdateTable {
 	public static void main(String[] args) {
 		Top t = new Top();
 		t.setVisible(true);
+		System.out.println(t.getComponentCount());
 	}
 }
