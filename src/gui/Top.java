@@ -121,7 +121,7 @@ public class Top extends JFrame implements ActionListener, UpdateTable {
 	public void buildMenu() {
 		menu = new JPopupMenu();
 
-		String[] cmds = { "退出", "变大", "变小", "最小" };
+		String[] cmds = { "退出", "最大", "一般", "最小" };
 		int i;
 		JMenuItem t;
 		for (i = 0; i < cmds.length; ++i) {
@@ -136,27 +136,32 @@ public class Top extends JFrame implements ActionListener, UpdateTable {
 		String cmd = e.getActionCommand();
 		if (cmd.equals("退出")) {
 			this.dispose();
-		} else if (cmd.equals("变大")) { // 最大模式
-			this.dispose();
-			this.setUndecorated(false);
-			this.addTable();
-			this.updateTaskShow();
-			this.setVisible(true);
-		} else if (cmd.equals("变小")) {// 一般模式
-			Dimension newsize = table.getSize();
-			this.dispose();
-			this.setUndecorated(true);
-			this.addTable();
-			table.setPreferredSize(newsize);
-			this.updateTaskShow();
-			this.setVisible(true);
-		} else if (cmd.equals("最小")) {// 最小模式
-			this.dispose();
-			this.setUndecorated(true);
-			this.removeTable();
-			this.updateTaskShow();
-			this.setVisible(true);
+		} else if (cmd.equals("最大")) {
+			this.setVisiblePlace(false, true);
+		} else if (cmd.equals("一般")) {
+			this.setVisiblePlace(true, true);
+		} else if (cmd.equals("最小")) {
+			this.setVisiblePlace(true, false);
 		}
+	}
+
+	/**
+	 * 设置显示模式
+	 * 
+	 * @param undecorated
+	 *            无边框?
+	 * @param tableVisible
+	 *            任务表格是否可见?
+	 */
+	protected void setVisiblePlace(boolean undecorated, boolean tableVisible) {
+		this.dispose();
+		this.setUndecorated(undecorated);
+		if (tableVisible)
+			this.addTable();
+		else
+			this.removeTable();
+		this.updateTaskShow();
+		this.setVisible(true);
 	}
 
 	/**
@@ -175,15 +180,26 @@ public class Top extends JFrame implements ActionListener, UpdateTable {
 			this.add(table, "Center");
 	}
 
+	/**
+	 * 获得表格目前最佳的大小
+	 * 
+	 * @return
+	 */
+	protected Dimension getPreferedTableSize() {
+		Dimension d = table.getSize();
+		d.height = table.getCellRect(0, 0, true).height * table.getRowCount();
+		return d;
+	}
+
 	@Override
 	public void updateTaskShow() {
 		this.updateLabel();
+		table.setPreferredSize(getPreferedTableSize());
 		pack();
 	}
 
 	public static void main(String[] args) {
 		Top t = new Top();
 		t.setVisible(true);
-		System.out.println(t.getComponentCount());
 	}
 }

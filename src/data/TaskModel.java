@@ -76,7 +76,6 @@ public class TaskModel extends AbstractTableModel {
 		// 在新的一行添加新的任务
 		newdata[i] = new Object[] { false, task.info, HMS(task.needTime), false };
 		data = newdata;
-		this.fireTableRowsInserted(old, old);
 	}
 
 	@Override
@@ -147,7 +146,7 @@ public class TaskModel extends AbstractTableModel {
 
 			// 清除激活选择框的选中状态
 			data[rowIndex][0] = false;
-			this.fireTableCellUpdated(rowIndex, 0);
+			data[rowIndex][2] = HMS(task.lastTime);
 		}
 
 		/*
@@ -166,9 +165,6 @@ public class TaskModel extends AbstractTableModel {
 			task.add(new Date().getTime() - today.begin.getTime());
 			today.tasks.writeTasks();
 		}
-
-		// 刷新本行的任务内容的显示,这样立刻就看到状态更改了
-		this.fireTableCellUpdated(rowIndex, 1);
 
 		// 标签可能因为此次table的修改而变化大小
 		updater.updateTaskShow();
