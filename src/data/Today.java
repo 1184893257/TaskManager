@@ -4,6 +4,12 @@ import java.util.Date;
 
 import data.tasks.Day;
 
+/**
+ * 运行时数据
+ * 
+ * @author lqy
+ * 
+ */
 public class Today {
 	/**
 	 * 本程序的开启时刻
@@ -28,9 +34,20 @@ public class Today {
 	 */
 	public Date begin;
 
+	/**
+	 * 空置时间
+	 */
+	public long vacancy;
+	/**
+	 * 空置开始
+	 */
+	public Date startLazy;
+
 	public Today() {
-		startup = new Date().getTime();
-		tasks=new Day();
+		Date now = new Date();
+		startup = now.getTime();
+		startLazy = now;
+		tasks = new Day();
 	}
 
 	/**

@@ -140,8 +140,10 @@ public class TaskModel extends AbstractTableModel {
 			// 当前任务完成,统计时间,结束任务,写入更改
 			task = today.tasks.get(data[rowIndex][1]);
 			today.cur = null; // 现在没任务
-			task.add(new Date().getTime() - today.begin.getTime());
+			Date now = new Date();
+			task.add(now.getTime() - today.begin.getTime());
 			task.finished();
+			today.startLazy = now;
 			today.tasks.writeTasks();
 
 			// 清除激活选择框的选中状态
@@ -157,6 +159,7 @@ public class TaskModel extends AbstractTableModel {
 			today.cur = (String) data[rowIndex][1];
 			today.begin = new Date();
 			today.used = today.tasks.get(today.cur).lastTime;
+			today.vacancy += today.begin.getTime() - today.startLazy.getTime();
 		}
 		// 暂停一个任务
 		else {

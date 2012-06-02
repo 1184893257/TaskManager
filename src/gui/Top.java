@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.util.Calendar;
 import java.util.Date;
 
 import javax.swing.JFrame;
@@ -27,6 +28,10 @@ public class Top extends JFrame implements ActionListener, UpdateTable {
 	 * 包含当前运行所需数据
 	 */
 	protected Today today;
+	/**
+	 * 今天的年/月/日 星期
+	 */
+	protected String date;
 	/**
 	 * 显示整体信息
 	 */
@@ -50,6 +55,14 @@ public class Top extends JFrame implements ActionListener, UpdateTable {
 		// 生成运行数据
 		today = new Today();
 
+		// 生成日期
+		String[] week = { "日", "一", "二", "三", "四", "五", "六" };
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(new Date());
+		date = cal.get(Calendar.YEAR) + "/" + (cal.get(Calendar.MONTH) + 1)
+				+ "/" + cal.get(Calendar.DATE) + " "
+				+ week[cal.get(Calendar.DAY_OF_WEEK) - 1];
+
 		// 创建显示组件
 		info = new JLabel("");
 		updateLabel();
@@ -66,8 +79,7 @@ public class Top extends JFrame implements ActionListener, UpdateTable {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				updateLabel();
-				pack();
+				updateTaskShow();
 			}
 
 			@Override
@@ -103,14 +115,17 @@ public class Top extends JFrame implements ActionListener, UpdateTable {
 	 * 更新标签的显示
 	 */
 	protected void updateLabel() {
-		String text = "<html>";
-		String start = "开机运行"
-				+ HMS(new Date().getTime() - today.getStartTime());
-		String total = "今日总任务";
-		String complete = "今日已完成";
-		text += start + "<br>" + total + "<br>" + complete;
+		Date now = new Date();
+		String text = "<html>" + date + "<br>";
+		String start = "开机运行" + HMS(now.getTime() - today.getStartTime());
+		String total = "今日总任务" + HMS(today.tasks.getTotal());
+		String complete = "今日已完成" + HMS(today.tasks.getFinished());
+		String vacancy = "空闲了"
+				+ HMS(today.isWorking() ? today.vacancy : today.vacancy
+						+ now.getTime() - today.startLazy.getTime());
+		text += start + "<br>" + total + "<br>" + complete + "<br>" + vacancy;
 		if (today.isWorking()) {
-			text += "<br>当前任务已用" + HMS(today.getCurUsed()) + "</html>";
+			text += "<br>当前任务已用" + HMS(today.getCurUsed());
 		}
 		info.setText(text);
 	}
