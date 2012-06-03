@@ -146,18 +146,19 @@ public class TaskModel extends AbstractTableModel {
 		data[rowIndex][columnIndex] = aValue;
 
 		DayTask task; // 当前任务
-		/*
-		 * 第3列是任务完成的标志,且只可能是正在运行的任务(别的这个键按不了) 所以是当前任务完成了
-		 */
+		Date now = new Date(); // 响应一个点击事件,肯定需要当前时间
+
+		// 第3列是任务完成的标志,且只可能是正在运行的任务(别的这个键按不了) 所以是当前任务完成了
 		if (columnIndex == 3) {
 			// 当前任务完成,统计时间,结束任务,写入更改
-			task = today.tasks.get(data[rowIndex][1]);
+			task = today.tasks.get(today.cur);
 			today.cur = null; // 现在没任务
-			Date now = new Date();
 			task.add(now.getTime() - today.begin.getTime());
 			task.finished();
-			today.startLazy = now;
 			today.tasks.writeTasks();
+
+			// 从现在起空闲了
+			today.startLazy = now;
 
 			// 清除激活选择框的选中状态
 			data[rowIndex][0] = false;
@@ -170,16 +171,21 @@ public class TaskModel extends AbstractTableModel {
 		else if ((boolean) aValue) {
 			// 开启一个任务
 			today.cur = (String) data[rowIndex][1];
-			today.begin = new Date();
+			today.begin = now;
 			today.used = today.tasks.get(today.cur).lastTime;
-			today.vacancy += today.begin.getTime() - today.startLazy.getTime();
+
+			// 从现在起工作了,把前一段空闲的时间加入到空闲时间中
+			today.vacancy += now.getTime() - today.startLazy.getTime();
 		}
 		// 暂停一个任务
 		else {
 			task = today.tasks.get(data[rowIndex][1]);
 			today.cur = null;
-			task.add(new Date().getTime() - today.begin.getTime());
+			task.add(now.getTime() - today.begin.getTime());
 			today.tasks.writeTasks();
+
+			// 从现在开始又空闲了
+			today.startLazy = now;
 		}
 
 		// 标签可能因为此次table的修改而变化大小
