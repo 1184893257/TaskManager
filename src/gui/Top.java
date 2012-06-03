@@ -133,7 +133,7 @@ public class Top extends JFrame implements ActionListener, UpdateTable {
 	/**
 	 * 建立标签的右键菜单
 	 */
-	public void buildMenu() {
+	protected void buildMenu() {
 		menu = new JPopupMenu();
 
 		String[] cmds = { "退出", "最大", "一般", "最小" };
@@ -143,6 +143,8 @@ public class Top extends JFrame implements ActionListener, UpdateTable {
 			t = new JMenuItem(cmds[i]);
 			t.addActionListener(this);
 			menu.add(t);
+			if (i == 0)
+				menu.addSeparator();
 		}
 	}
 

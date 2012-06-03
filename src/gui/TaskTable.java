@@ -11,6 +11,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JTable;
@@ -43,9 +44,9 @@ public class TaskTable extends JTable implements ActionListener {
 	 */
 	protected JPopupMenu menu;
 	/**
-	 * 右键弹出菜单
+	 * 显示已完成?
 	 */
-	protected JPopupMenu menu2;
+	protected JCheckBoxMenuItem check;
 	/**
 	 * 第1列的渲染器
 	 */
@@ -81,21 +82,7 @@ public class TaskTable extends JTable implements ActionListener {
 		this.today = today;
 
 		// 添加右键菜单
-		menu = new JPopupMenu();
-		menu2 = new JPopupMenu();
-		String[] cmds = { "添加", "删除" };
-		int i;
-		JMenuItem t;
-		for (i = 0; i < cmds.length; ++i) {
-			t = new JMenuItem(cmds[i]);
-			t.addActionListener(this);
-			menu.add(t);
-			if (!cmds[i].equals("删除")) {
-				t = new JMenuItem(cmds[i]);
-				t.addActionListener(this);
-				menu2.add(t);
-			}
-		}
+		buildMenu();
 
 		// 在鼠标release后弹出菜单
 		this.addMouseListener(new MouseAdapter() {
@@ -103,12 +90,7 @@ public class TaskTable extends JTable implements ActionListener {
 			@Override
 			public void mouseReleased(MouseEvent e) {
 				if (e.isPopupTrigger()) {
-					int r1 = TaskTable.this.getSelectedRow();
-					int r2 = TaskTable.this.rowAtPoint(e.getPoint());
-					if (r1 == r2)
-						menu.show(e.getComponent(), e.getX(), e.getY());
-					else
-						menu2.show(e.getComponent(), e.getX(), e.getY());
+					menu.show(e.getComponent(), e.getX(), e.getY());
 				}
 			}
 
@@ -121,10 +103,32 @@ public class TaskTable extends JTable implements ActionListener {
 		colModel.getColumn(3).setPreferredWidth(20);
 	}
 
+	/**
+	 * 建立右键菜单
+	 */
+	protected void buildMenu() {
+		menu = new JPopupMenu();
+		String[] cmds = { "隐藏已完成", "添加新任务", "删除任务" };
+		int i;
+		JMenuItem t;
+		for (i = 0; i < cmds.length; ++i) {
+			if (cmds[i].equals("隐藏已完成")) {
+				check = new JCheckBoxMenuItem(cmds[i]);
+				check.addActionListener(this);
+				menu.add(check);
+				menu.addSeparator();
+				continue;
+			}
+			t = new JMenuItem(cmds[i]);
+			t.addActionListener(this);
+			menu.add(t);
+		}
+	}
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String cmd = e.getActionCommand();
-		if (cmd.equals("添加")) {
+		if (cmd.equals("添加新任务")) {
 			if (frame == null) {
 				frame = new AddTask(top);
 				frame.pack();
@@ -135,6 +139,9 @@ public class TaskTable extends JTable implements ActionListener {
 			/* 表格模型添加一定要在任务集合添加之后,因为表格显示的时候要从任务集合中查找对应任务 */
 			today.tasks.add(newtask);
 			model.addTask(newtask);
+			updater.updateTaskShow();
+		} else if (cmd.equals("隐藏已完成")) {
+			model.showTasks(!check.isSelected());
 			updater.updateTaskShow();
 		}
 	}

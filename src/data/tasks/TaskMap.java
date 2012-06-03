@@ -68,12 +68,23 @@ public abstract class TaskMap<E extends Task> {
 	}
 
 	/**
-	 * 返回任务集合中任务的个数
+	 * 返回任务集合中任务的个数<br>
+	 * 这种方法应该是每种阶段任务集合都应具备的
 	 * 
+	 * @param incFinished
+	 *            包括已完成的?
 	 * @return
 	 */
-	public int getSize() {
-		return tasks.size();
+	public int getSize(boolean incFinished) {
+		if (incFinished)
+			return tasks.size();
+
+		int size = 0;
+		Iterator<Entry<String, E>> it = tasks.entrySet().iterator();
+		while (it.hasNext())
+			if (!it.next().getValue().finished)
+				size++;
+		return size;
 	}
 
 	/**

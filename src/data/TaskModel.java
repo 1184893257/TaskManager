@@ -46,17 +46,30 @@ public class TaskModel extends AbstractTableModel {
 	public TaskModel(Today today, UpdateTable updater) {
 		this.updater = updater;
 		this.today = today;
-		final int size = today.tasks.getSize();
+		showTasks(true);// 初始状态是显示已完成的
+	}
+
+	/**
+	 * 重新设data以更新显示
+	 * 
+	 * @param showFinished
+	 *            显示已完成的任务?
+	 */
+	public void showTasks(boolean showFinished) {
+		final int size = today.tasks.getSize(showFinished);
 		data = new Object[size][columnNames.length];
 
 		Iterator<Entry<String, DayTask>> it = today.tasks.iterator();
-		int i;
+		int i = 0;
 		DayTask task;
-		for (i = 0; i < size; ++i) {
+		while (it.hasNext()) {
 			task = it.next().getValue();
-			data[i] = new Object[] { false, task.info,
-					task.finished ? HMS(task.lastTime) : HMS(task.needTime),
-					task.finished };
+			if (showFinished || !task.finished)
+				data[i++] = new Object[] {
+						false,
+						task.info,
+						task.finished ? HMS(task.lastTime) : HMS(task.needTime),
+						task.finished };
 		}
 	}
 
