@@ -17,13 +17,17 @@ import static data.StaticData.*;
  * @param <E>
  *            任务的类型
  */
-public abstract class TaskMap<E extends Task> {
+public abstract class TaskMap<E extends Task, K extends Task> {
 	public static final String DATA = DATAFOLDER; // 任务集合的存放文件夹名称
 
 	/**
 	 * 任务集合
 	 */
 	protected TreeMap<String, E> tasks;
+	/**
+	 * 此任务集合的上一级任务集合
+	 */
+	protected TreeMap<String, K> father;
 	/**
 	 * 任务文件所在文件夹<br>
 	 * 在{@link #readTasks()}的时候会mkdirs以免{@link #writeTasks()} 写不进去<br>

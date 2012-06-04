@@ -4,16 +4,15 @@ import java.io.File;
 import java.util.*;
 import java.util.Map.Entry;
 
-import data.task.DayTask;
+import data.task.*;
 
 /**
  * 此类包含一天的任务<br>
  * 有多个DayTask
  * 
  * @author lqy
- * 
  */
-public class Day extends TaskMap<DayTask> {
+public class Day extends TaskMap<DayTask, Task> {// TODO K应该是Week
 	/**
 	 * 根据日期指示的路径读取今天任务的构造方法
 	 * 
@@ -75,7 +74,7 @@ public class Day extends TaskMap<DayTask> {
 	 * @param cal
 	 *            日期
 	 */
-	public Day(Calendar cal) {
+	public Day(Calendar cal) {// TODO 构造的时候传入上级
 		this(cal, true);
 	}
 

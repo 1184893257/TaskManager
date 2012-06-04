@@ -3,6 +3,7 @@ package data;
 import java.util.Calendar;
 import java.util.Date;
 
+import data.task.DayTask;
 import data.tasks.Day;
 
 /**
@@ -81,5 +82,60 @@ public class Today {
 	 */
 	public long getCurUsed() {
 		return used + new Date().getTime() - begin.getTime();
+	}
+
+	/**
+	 * 完成当前任务
+	 * 
+	 * @param now
+	 *            现在的时间
+	 * @return 当前结束的任务最终所用的时间(单位:毫秒)
+	 */
+	public long finishCur(Date now) {
+		DayTask task; // 当前任务
+		task = tasks.get(cur);
+		cur = null; // 现在没任务
+		task.add(now.getTime() - begin.getTime());
+		task.finished();
+		tasks.writeTasks();
+
+		// 从现在起空闲了
+		startLazy = now;
+		return task.lastTime;
+	}
+
+	/**
+	 * 开启一个新任务
+	 * 
+	 * @param task
+	 *            任务内容
+	 * @param now
+	 *            现在的时间
+	 */
+	public void startTask(String task, Date now) {
+		cur = task;
+		begin = now;
+		used = tasks.get(cur).lastTime;
+
+		// 从现在起工作了,把前一段空闲的时间加入到空闲时间中
+		vacancy += now.getTime() - startLazy.getTime();
+	}
+
+	/**
+	 * 中断当前任务<br>
+	 * 暂停现在的任务
+	 * 
+	 * @param now
+	 *            现在的时间
+	 */
+	public void stopTask(Date now) {
+		DayTask task;
+		task = tasks.get(cur);
+		cur = null;
+		task.add(now.getTime() - begin.getTime());
+		tasks.writeTasks();
+
+		// 从现在开始又空闲了
+		startLazy = now;
 	}
 }
