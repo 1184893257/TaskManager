@@ -66,7 +66,8 @@ public class TaskModel extends AbstractTableModel {
 			task = it.next().getValue();
 			if (showFinished || !task.finished)
 				data[i++] = new Object[] {
-						false,
+						// 当前任务为true
+						null == today.cur ? false : today.cur.equals(task.info),
 						task.info,
 						task.finished ? HMS(task.lastTime) : HMS(task.needTime),
 						task.finished };

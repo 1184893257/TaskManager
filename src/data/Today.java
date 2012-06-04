@@ -1,5 +1,6 @@
 package data;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import data.tasks.Day;
@@ -47,7 +48,12 @@ public class Today {
 		Date now = new Date();
 		startup = now.getTime();
 		startLazy = now;
-		tasks = new Day();
+
+		Calendar date = Calendar.getInstance();
+		date.setTime(now);
+
+		// 日任务集合的构造
+		tasks = new Day(date);
 	}
 
 	/**

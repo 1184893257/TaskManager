@@ -7,6 +7,8 @@ import java.util.TreeMap;
 
 import data.task.Task;
 
+import static data.StaticData.*;
+
 /**
  * 任务集合的父类
  * 
@@ -16,14 +18,29 @@ import data.task.Task;
  *            任务的类型
  */
 public abstract class TaskMap<E extends Task> {
+	public static final String DATA = DATAFOLDER; // 任务集合的存放文件夹名称
+
 	/**
 	 * 任务集合
 	 */
 	protected TreeMap<String, E> tasks;
 	/**
+	 * 任务文件所在文件夹<br>
+	 * 在{@link #readTasks()}的时候会mkdirs以免{@link #writeTasks()} 写不进去<br>
+	 * 所以在设置{@link #path}的时候也设置一下dir
+	 */
+	protected String dir;
+	/**
 	 * 任务文件的路径
 	 */
 	protected String path;
+
+	/**
+	 * 这个方法TaskMap中没有调用,所以可以为空,只是提醒子类要设置{@linkplain #dir}
+	 * 
+	 * @param dir
+	 */
+	public abstract void buildDir(String dir);
 
 	/**
 	 * 读出任务集合
@@ -32,9 +49,18 @@ public abstract class TaskMap<E extends Task> {
 	 */
 	@SuppressWarnings("unchecked")
 	public boolean readTasks() {
+		// 文件的父文件夹不存在则创建
+		File d = new File(dir);
+		if (!d.exists()) {
+			d.mkdirs();
+			return false;
+		}
+
+		// 文件不存在则返回
 		File f = new File(path);
 		if (!f.exists())
 			return false;
+
 		try {
 			ObjectInputStream in = new ObjectInputStream(
 					new BufferedInputStream(new FileInputStream(f)));
