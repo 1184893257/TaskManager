@@ -138,7 +138,7 @@ public class TaskTable extends JTable implements ActionListener {
 
 			/* 表格模型添加一定要在任务集合添加之后,因为表格显示的时候要从任务集合中查找对应任务 */
 			today.tasks.add(newtask);
-			model.addTask(newtask);
+			model.showTasks(!check.isSelected());
 			updater.updateTaskShow();
 		} else if (cmd.equals("隐藏已完成")) {
 			model.showTasks(!check.isSelected());

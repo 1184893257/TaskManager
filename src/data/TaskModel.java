@@ -72,24 +72,7 @@ public class TaskModel extends AbstractTableModel {
 						task.finished ? HMS(task.lastTime) : HMS(task.needTime),
 						task.finished };
 		}
-	}
-
-	/**
-	 * 添加一个任务到表格最后一行
-	 * 
-	 * @param task
-	 */
-	public void addTask(DayTask task) {
-		final int old = data.length;
-		final int cols = columnNames.length;
-		Object[][] newdata = new Object[old + 1][cols];
-		int i;
-		// 直接复制旧的二维数组
-		for (i = 0; i < old; ++i)
-			newdata[i] = data[i];
-		// 在新的一行添加新的任务
-		newdata[i] = new Object[] { false, task.info, HMS(task.needTime), false };
-		data = newdata;
+		this.fireTableDataChanged();
 	}
 
 	@Override

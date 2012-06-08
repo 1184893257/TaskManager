@@ -102,7 +102,6 @@ public class Top extends JFrame implements ActionListener, UpdateTable {
 		});
 
 		add(info, "North");
-		// add(new JScrollPane(table), "Center");
 		add(table, "Center");
 
 		this.setUndecorated(true);

@@ -60,6 +60,7 @@ public class Day extends TaskMap<DayTask, Task> {// TODO K应该是Week
 					trans.add(d.info);
 				}
 			}
+			this.writeTasks();// 把今天的修改写入
 
 			// 删除转移过的任务
 			for (String task : trans)
