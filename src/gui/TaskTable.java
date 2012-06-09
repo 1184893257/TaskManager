@@ -155,8 +155,10 @@ public class TaskTable extends JTable implements ActionListener {
 			frame.showup(origin.info, hour, minute);
 
 			// 提交修改
-			DayTask newtask = new DayTask(frame.info, frame.needTime);
-			today.tasks.modify(origin.info, newtask);
+			String originInfo = origin.info;
+			origin.info = frame.info;
+			origin.needTime = frame.needTime;
+			today.tasks.modify(originInfo, origin);
 
 			// 刷新显示
 			model.showTasks(!check.isSelected());

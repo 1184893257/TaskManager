@@ -170,5 +170,6 @@ public abstract class TaskMap<E extends Task, K extends Task> {
 	public void modify(String origin, E now) {
 		tasks.remove(origin);
 		tasks.put(now.info, now);
+		this.writeTasks();// 已修改,保存修改
 	}
 }
