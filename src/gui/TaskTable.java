@@ -62,7 +62,7 @@ public class TaskTable extends JTable implements ActionListener {
 	/**
 	 * 添加任务的弹出窗体
 	 */
-	protected AddTask frame;
+	protected TaskDialog frame;
 
 	public TaskTable(Today today, Frame top, UpdateTable updater) {
 		super(new TaskModel(today, updater));
@@ -108,7 +108,7 @@ public class TaskTable extends JTable implements ActionListener {
 	 */
 	protected void buildMenu() {
 		menu = new JPopupMenu();
-		String[] cmds = { "隐藏已完成", "添加新任务", "删除任务" };
+		String[] cmds = { "隐藏已完成", "添加新任务", "修改任务", "删除任务" };
 		int i;
 		JMenuItem t;
 		for (i = 0; i < cmds.length; ++i) {
@@ -129,11 +129,9 @@ public class TaskTable extends JTable implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		String cmd = e.getActionCommand();
 		if (cmd.equals("添加新任务")) {
-			if (frame == null) {
-				frame = new AddTask(top);
-				frame.pack();
-			}
-			frame.setVisible(true);
+			if (frame == null)
+				frame = new TaskDialog(top);
+			frame.showup();
 			DayTask newtask = new DayTask(frame.info, frame.needTime);
 
 			/* 表格模型添加一定要在任务集合添加之后,因为表格显示的时候要从任务集合中查找对应任务 */
@@ -141,6 +139,31 @@ public class TaskTable extends JTable implements ActionListener {
 			model.showTasks(!check.isSelected());
 			updater.updateTaskShow();
 		} else if (cmd.equals("隐藏已完成")) {
+			model.showTasks(!check.isSelected());
+			updater.updateTaskShow();
+		} else if (cmd.equals("修改任务")) {
+			// 获得选中的要修改的任务
+			DayTask origin = today.tasks.get(this.getValueAt(
+					this.getSelectedRow(), 1));
+
+			// 设置对话框的显示
+			if (frame == null)
+				frame = new TaskDialog(top);
+			long need = origin.needTime / 1000L / 60L;
+			int minute = (int) (need % 60);
+			int hour = (int) (need / 60);
+			frame.showup(origin.info, hour, minute);
+
+			// 提交修改
+			DayTask newtask = new DayTask(frame.info, frame.needTime);
+			today.tasks.modify(origin.info, newtask);
+
+			// 刷新显示
+			model.showTasks(!check.isSelected());
+			updater.updateTaskShow();
+		} else if (cmd.equals("删除任务")) {
+			today.tasks.remove((String) this.getValueAt(this.getSelectedRow(),
+					1));
 			model.showTasks(!check.isSelected());
 			updater.updateTaskShow();
 		}

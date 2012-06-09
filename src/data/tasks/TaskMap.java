@@ -152,10 +152,23 @@ public abstract class TaskMap<E extends Task, K extends Task> {
 	 * 删除任务
 	 * 
 	 * @param info
-	 *            要删除的任务的创建时间
+	 *            要删除的任务的名称
 	 */
 	public void remove(String info) {
 		tasks.remove(info);
 		this.writeTasks();// 已修改,保存修改
+	}
+
+	/**
+	 * 修改一个任务
+	 * 
+	 * @param origin
+	 *            原任务的名称
+	 * @param now
+	 *            现在的情况
+	 */
+	public void modify(String origin, E now) {
+		tasks.remove(origin);
+		tasks.put(now.info, now);
 	}
 }

@@ -11,7 +11,7 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
-public class AddTask extends JDialog implements ActionListener {
+public class TaskDialog extends JDialog implements ActionListener {
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -36,7 +36,7 @@ public class AddTask extends JDialog implements ActionListener {
 	 */
 	protected long needTime;
 
-	public AddTask(Frame top) {
+	public TaskDialog(Frame top) {
 		super(top, "请输入新任务的信息", true);
 
 		// 设置布局管理器
@@ -94,8 +94,34 @@ public class AddTask extends JDialog implements ActionListener {
 		c.anchor = GridBagConstraints.CENTER;
 		layout.setConstraints(ok, c);
 		add(ok);
-		
-		//pack();
+
+		pack();
+	}
+
+	/**
+	 * 显示出任务对话框<br>
+	 * 用于修改任务时
+	 * 
+	 * @param info
+	 *            任务名称
+	 * @param hour
+	 *            所需时间的小时部分
+	 * @param minute
+	 *            所需时间的分钟部分
+	 */
+	public void showup(String info, int hour, int minute) {
+		infoText.setText(info);
+		hourText.setText(Integer.toString(hour));
+		minuteText.setText(Integer.toString(minute));
+		this.setVisible(true);
+	}
+
+	/**
+	 * 显示对话框的无参数版本<br>
+	 * 用于新建任务时
+	 */
+	public void showup() {
+		this.setVisible(true);
 	}
 
 	@Override
