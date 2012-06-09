@@ -1,4 +1,3 @@
-e:
-cd \works\jee\TaskManager
+mkdir bin
 cd src\gui
 javac -classpath .. -d ..\..\bin Top.java
