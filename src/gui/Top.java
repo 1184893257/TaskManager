@@ -12,6 +12,7 @@ import java.awt.event.MouseMotionAdapter;
 import java.util.Calendar;
 import java.util.Date;
 
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
@@ -48,6 +49,10 @@ public class Top extends JFrame implements ActionListener, UpdateTable {
 	 * 显示任务表格
 	 */
 	protected TaskTable table;
+	/**
+	 * 始终置顶可选框
+	 */
+	protected JCheckBoxMenuItem alwaysTop;
 
 	public Top() {
 		super("今日事今日毕");
@@ -135,14 +140,20 @@ public class Top extends JFrame implements ActionListener, UpdateTable {
 	protected void buildMenu() {
 		menu = new JPopupMenu();
 
-		String[] cmds = { "退出", "最大", "一般", "最小" };
+		String[] cmds = { "置顶", "退出", "最大", "一般", "最小" };
 		int i;
 		JMenuItem t;
 		for (i = 0; i < cmds.length; ++i) {
+			if (cmds[i].equals("置顶")) {
+				alwaysTop = new JCheckBoxMenuItem(cmds[i]);
+				alwaysTop.addActionListener(this);
+				menu.add(alwaysTop);
+				continue;
+			}
 			t = new JMenuItem(cmds[i]);
 			t.addActionListener(this);
 			menu.add(t);
-			if (i == 0)
+			if (i == 1)
 				menu.addSeparator();
 		}
 	}
@@ -158,6 +169,8 @@ public class Top extends JFrame implements ActionListener, UpdateTable {
 			this.setVisiblePlace(true, true);
 		} else if (cmd.equals("最小")) {
 			this.setVisiblePlace(true, false);
+		} else if (cmd.equals("置顶")) {
+			this.setAlwaysOnTop(alwaysTop.isSelected());
 		}
 	}
 
