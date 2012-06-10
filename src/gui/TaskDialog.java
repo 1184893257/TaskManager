@@ -3,12 +3,14 @@ package gui;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 public class TaskDialog extends JDialog implements ActionListener {
@@ -95,7 +97,15 @@ public class TaskDialog extends JDialog implements ActionListener {
 		layout.setConstraints(ok, c);
 		add(ok);
 
+		// 让关闭按钮消失,用户只能点确定
+		this.setUndecorated(true);
 		pack();
+
+		// 让对话框显示在一个好位置
+		Point p = top.getLocation();
+		p.y = p.y - this.getSize().height;
+		p.y = p.y < 0 ? 0 : p.y;
+		this.setLocation(p);
 	}
 
 	/**
@@ -129,6 +139,10 @@ public class TaskDialog extends JDialog implements ActionListener {
 		this.info = infoText.getText();
 		this.needTime = Integer.parseInt(hourText.getText()) * 3600 * 1000
 				+ Integer.parseInt(minuteText.getText()) * 60 * 1000;
-		this.dispose();
+		if (this.needTime > 0L) // 所需时间不为0
+			this.dispose();
+		else
+			JOptionPane.showMessageDialog(this, "所需时间必须大于0", "输入错误",
+					JOptionPane.ERROR_MESSAGE);
 	}
 }
