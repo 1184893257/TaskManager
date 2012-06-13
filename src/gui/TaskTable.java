@@ -136,11 +136,6 @@ public class TaskTable extends JTable implements ActionListener {
 
 			/* 表格模型添加一定要在任务集合添加之后,因为表格显示的时候要从任务集合中查找对应任务 */
 			today.tasks.add(newtask);
-			model.showTasks(!check.isSelected());
-			updater.updateTaskShow();
-		} else if (cmd.equals("隐藏已完成")) {
-			model.showTasks(!check.isSelected());
-			updater.updateTaskShow();
 		} else if (cmd.equals("修改任务")) {
 			// 获得选中的要修改的任务
 			DayTask origin = today.tasks.get(this.getValueAt(
@@ -159,16 +154,13 @@ public class TaskTable extends JTable implements ActionListener {
 			origin.info = frame.info;
 			origin.needTime = frame.needTime;
 			today.tasks.modify(originInfo, origin);
-
-			// 刷新显示
-			model.showTasks(!check.isSelected());
-			updater.updateTaskShow();
 		} else if (cmd.equals("删除任务")) {
 			today.tasks.remove((String) this.getValueAt(this.getSelectedRow(),
 					1));
-			model.showTasks(!check.isSelected());
-			updater.updateTaskShow();
 		}
+		// 刷新显示
+		model.showTasks(!check.isSelected());
+		updater.updateTaskShow();
 	}
 
 	/**
