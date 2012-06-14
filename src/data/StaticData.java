@@ -7,5 +7,6 @@ package data;
  * 
  */
 public class StaticData {
-	public static final String DATAFOLDER = "data";
+	public static final String DATAFOLDER = "data";// 数据文件夹相对路径
+	public static final double INCRATE = 0.3;// 持续时间超越所需时间时所需时间的自增率
 }

@@ -33,20 +33,4 @@ public abstract class Task implements Serializable {
 	 * 如果任务已完成则是任务实际所花时间
 	 */
 	public long lastTime;
-
-	/**
-	 * 任务所花时间增长一段<br>
-	 * 可能需要调用上级的add
-	 * 
-	 * @param time
-	 *            花费的一段时间(单位:毫秒)
-	 */
-	public abstract void add(long time);
-
-	/**
-	 * 任务完成
-	 */
-	public void finished() {
-		this.finished = true;
-	}
 }

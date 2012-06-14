@@ -92,16 +92,14 @@ public class Today {
 	 * @return 当前结束的任务最终所用的时间(单位:毫秒)
 	 */
 	public long finishCur(Date now) {
-		DayTask task; // 当前任务
-		task = tasks.get(cur);
+		DayTask task = tasks.get(cur);
+		tasks.addLastTime(cur, now.getTime() - begin.getTime());
+		tasks.finish(cur);
 		cur = null; // 现在没任务
-		task.add(now.getTime() - begin.getTime());
-		task.finished();
-		tasks.writeTasks();
 
 		// 从现在起空闲了
 		startLazy = now;
-		return task.lastTime;
+		return task.needTime;
 	}
 
 	/**
@@ -129,11 +127,8 @@ public class Today {
 	 *            现在的时间
 	 */
 	public void stopTask(Date now) {
-		DayTask task;
-		task = tasks.get(cur);
+		tasks.addLastTime(cur, now.getTime() - begin.getTime());
 		cur = null;
-		task.add(now.getTime() - begin.getTime());
-		tasks.writeTasks();
 
 		// 从现在开始又空闲了
 		startLazy = now;

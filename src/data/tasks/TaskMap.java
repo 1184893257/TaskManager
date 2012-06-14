@@ -5,6 +5,8 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
+import javax.swing.JOptionPane;
+
 import data.task.Task;
 
 import static data.StaticData.*;
@@ -15,7 +17,9 @@ import static data.StaticData.*;
  * @author lqy
  * 
  * @param <E>
- *            任务的类型
+ *            本集合存储的任务的类型
+ * @param <K>
+ *            本集合的上一级的任务的类型
  */
 public abstract class TaskMap<E extends Task, K extends Task> {
 	public static final String DATA = DATAFOLDER; // 任务集合的存放文件夹名称
@@ -27,7 +31,7 @@ public abstract class TaskMap<E extends Task, K extends Task> {
 	/**
 	 * 此任务集合的上一级任务集合
 	 */
-	protected TreeMap<String, K> father;
+	protected TaskMap<K, ? extends Task> father;
 	/**
 	 * 任务文件所在文件夹<br>
 	 * 在{@link #readTasks()}的时候会mkdirs以免{@link #writeTasks()} 写不进去<br>
@@ -143,9 +147,15 @@ public abstract class TaskMap<E extends Task, K extends Task> {
 	 * @param e
 	 *            要添加的任务
 	 */
-	public void add(E e) {
-		tasks.put(e.info, e);
-		this.writeTasks(); // 已修改,保存修改
+	public boolean add(E e) {
+		if (tasks.get(e.info) == null) {
+			tasks.put(e.info, e);
+			this.writeTasks(); // 已修改,保存修改
+			return true;
+		}
+		JOptionPane.showMessageDialog(null, "任务" + e.info + "已存在", "操作被拒绝",
+				JOptionPane.ERROR_MESSAGE);
+		return false;
 	}
 
 	/**
@@ -153,10 +163,33 @@ public abstract class TaskMap<E extends Task, K extends Task> {
 	 * 
 	 * @param info
 	 *            要删除的任务的名称
+	 * @return 删除是否成功
 	 */
 	public void remove(String info) {
+		remove(info, "删除");
+	}
+
+	/**
+	 * 删除一个任务<br>
+	 * 也是修改任务的前奏
+	 * 
+	 * @param info
+	 *            要删除的任务
+	 * @param type
+	 *            这次删除的目地(如果出错,则显示出这个目地操作失败)
+	 * @return 删除是否成功
+	 */
+	protected boolean remove(String info, String type) {
+		E task = tasks.get(info);
+		if (task.needTime > 0) {
+			JOptionPane.showMessageDialog(null,
+					"任务" + info + "已有子任务,不能" + type, "操作被拒绝",
+					JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
 		tasks.remove(info);
 		this.writeTasks();// 已修改,保存修改
+		return true;
 	}
 
 	/**
@@ -168,8 +201,51 @@ public abstract class TaskMap<E extends Task, K extends Task> {
 	 *            现在的情况
 	 */
 	public void modify(String origin, E now) {
-		tasks.remove(origin);
-		tasks.put(now.info, now);
-		this.writeTasks();// 已修改,保存修改
+		if (remove(origin, "修改"))
+			add(now);
+	}
+
+	/**
+	 * 扩展info任务的的所需时间
+	 * 
+	 * @param info
+	 *            代表一个任务的字符串
+	 * @param time
+	 *            要增加的时间(为负数时就变成了减少的时间了)
+	 */
+	public void addNeedTime(String info, long time) {
+		String up = null; // 代表上级任务的字符串
+		E task = tasks.get(info);
+		if (task != null) {
+			up = task.father;
+			task.needTime += time;
+			this.writeTasks(); // 此集合已被修改
+		} else
+			up = info;
+
+		if (up != null)
+			father.addNeedTime(up, time);
+	}
+
+	/**
+	 * 增加任务info的持续时间
+	 * 
+	 * @param info
+	 *            代表一个任务的字符串
+	 * @param time
+	 *            要增加的时间(为负数时就变成了减少的时间了)
+	 */
+	public void addLastTime(String info, long time) {
+		String up = null; // 代表上级任务的字符串
+		E task = tasks.get(info);
+		if (task != null) {
+			up = task.father;
+			task.lastTime += time;
+			this.writeTasks(); // 此集合已被修改
+		} else
+			up = info;
+
+		if (up != null)
+			father.addLastTime(up, time);
 	}
 }

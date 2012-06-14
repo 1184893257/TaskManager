@@ -16,12 +16,4 @@ public class DayTask extends Task {
 		this.needTime = needTime;
 	}
 
-	@Override
-	public void add(long time) {
-		this.lastTime += time;
-		if (null != father) {
-			// XXX thismonth中的father要增加
-		}
-	}
-
 }
