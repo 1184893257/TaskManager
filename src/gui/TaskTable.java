@@ -63,6 +63,18 @@ public class TaskTable extends JTable implements ActionListener {
 	 * 添加任务的弹出窗体
 	 */
 	protected TaskDialog frame;
+	/**
+	 * 普通任务的字体
+	 */
+	protected final Font normalFont;
+	/**
+	 * 已完成任务的字体
+	 */
+	protected final Font finishedFont;
+	/**
+	 * 正在执行的任务的字体
+	 */
+	protected final Font runningFont;
 
 	public TaskTable(Today today, Frame top, UpdateTable updater) {
 		super(new TaskModel(today, updater));
@@ -101,6 +113,13 @@ public class TaskTable extends JTable implements ActionListener {
 		colModel.getColumn(1).setPreferredWidth(300);
 		colModel.getColumn(2).setPreferredWidth(100);
 		colModel.getColumn(3).setPreferredWidth(20);
+
+		// 设置3种字体
+		final int size = 12;
+		final String font = "微软雅黑";
+		this.normalFont = new Font(font, 0, size);
+		this.finishedFont = new Font(font, 0, size);
+		this.runningFont = new Font(font, Font.BOLD, size);
 	}
 
 	/**
@@ -155,8 +174,8 @@ public class TaskTable extends JTable implements ActionListener {
 			origin.needTime = frame.needTime;
 			today.day.modify(originInfo, origin);
 		} else if (cmd.equals("删除任务")) {
-			today.day.remove((String) this.getValueAt(this.getSelectedRow(),
-					1));
+			today.day
+					.remove((String) this.getValueAt(this.getSelectedRow(), 1));
 		}
 		// 刷新显示
 		model.showTasks(!check.isSelected());
@@ -183,17 +202,17 @@ public class TaskTable extends JTable implements ActionListener {
 
 			// 如果是当前任务,则加粗
 			if (today.cur != null && today.cur.equals(value)) {
-				ans.setFont(ans.getFont().deriveFont(Font.BOLD));
+				ans.setFont(TaskTable.this.runningFont);
 				ans.setForeground(Color.red);
 			}
 			// 如果是已完成任务,style为0,颜色为灰
 			else if (today.day.get(value).finished) {
-				ans.setFont(ans.getFont().deriveFont(0));
+				ans.setFont(TaskTable.this.finishedFont);
 				ans.setForeground(Color.gray);
 			}
 			// 普通的未完成的任务,style为0,颜色为黑
 			else {
-				ans.setFont(ans.getFont().deriveFont(0));
+				ans.setFont(TaskTable.this.normalFont);
 				ans.setForeground(Color.black);
 			}
 			return ans;
