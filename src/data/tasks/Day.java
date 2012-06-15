@@ -7,6 +7,8 @@ import java.util.Map.Entry;
 import data.StaticData;
 import data.task.*;
 
+import static gui.FormatTime.*;
+
 /**
  * 此类包含一天的任务<br>
  * 有多个DayTask
@@ -189,5 +191,28 @@ public class Day extends TaskMap<DayTask, Task> {// TODO K应该是Week
 		long scale = task.lastTime - task.needTime;// 一般是负数
 		addNeedTime(info, scale);// 收缩所需时间为最终花费的时间
 		finish(this, info);
+	}
+
+	public static void main(String[] args) {
+		Calendar today = Calendar.getInstance();
+		today.setTime(new Date());
+		Calendar t = (Calendar) today.clone();
+		t.set(2012, 6 - 1, 7);
+
+		while (t.before(today)) {
+			Day aday = new Day(t, false);
+			System.out.println(t.getTime());
+			Iterator<Entry<String, DayTask>> it = aday.iterator();
+			while (it.hasNext()) {
+				DayTask task = it.next().getValue();
+				System.out.println(task.info + " " + HMS(task.needTime) + "-"
+						+ HMS(task.lastTime));
+				if (task.finished)
+					task.needTime = task.lastTime;
+			}
+			aday.writeTasks();
+			System.out.println();
+			t.add(Calendar.DATE, 1);
+		}
 	}
 }
