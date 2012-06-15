@@ -48,7 +48,7 @@ public abstract class TaskMap<E extends Task, K extends Task> {
 	 * 
 	 * @param dir
 	 */
-	public abstract void buildDir(String dir);
+	protected abstract void buildDir(String dir);
 
 	/**
 	 * 读出任务集合

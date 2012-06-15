@@ -15,7 +15,12 @@ import static gui.FormatTime.*;
  * 
  * @author lqy
  */
-public class Day extends TaskMap<DayTask, Task> {// TODO K应该是Week
+public class Day extends TaskMap<DayTask, WeekTask> {
+	@Override
+	protected void buildDir(String dir) {
+		this.dir = dir;
+	}
+
 	/**
 	 * 根据日期指示的路径读取今天任务的构造方法
 	 * 
@@ -53,33 +58,31 @@ public class Day extends TaskMap<DayTask, Task> {// TODO K应该是Week
 
 			// 循环转移昨天未完成的任务到今天
 			Iterator<Entry<String, DayTask>> it = y.iterator();
-			// 转移过的任务,转移之后从昨天中删除
-			LinkedList<String> trans = new LinkedList<String>();
 			DayTask d;
 			while (it.hasNext()) {
 				d = it.next().getValue();
 				if (!d.finished) {
 					tasks.put(d.info, d);
-					trans.add(d.info);
+					it.remove();
 				}
 			}
 			this.writeTasks();// 把今天的修改写入
-
-			// 删除转移过的任务
-			for (String task : trans)
-				y.tasks.remove(task);
-			y.writeTasks();
+			y.writeTasks();// 把昨天的修改写入
 		}
 	}
 
 	/**
-	 * 提供外部使用的一天的任务集合的构造方法
+	 * 因为Week构造前需对日历对象做些处理,而构造方法中前期能做的工作有限,<br>
+	 * 所以统一 使用静态方法来生成对象
 	 * 
 	 * @param cal
 	 *            日期
+	 * @return 天任务集合
 	 */
-	public Day(Calendar cal) {// TODO 构造的时候传入上级
-		this(cal, true);
+	public static Day newDay(Calendar cal, Week father) {
+		Day d = new Day(cal, true);
+		d.father = father;
+		return d;
 	}
 
 	/**
@@ -113,11 +116,6 @@ public class Day extends TaskMap<DayTask, Task> {// TODO K应该是Week
 			ans += task.lastTime;
 		}
 		return ans;
-	}
-
-	@Override
-	public void buildDir(String dir) {
-		this.dir = dir;
 	}
 
 	@Override

@@ -10,10 +10,11 @@ public class DayTask extends Task {
 	 *            任务的内容
 	 * @param needTime
 	 *            任务估计需要的时间(单位:毫秒)
+	 * @param father
+	 *            父任务
 	 */
-	public DayTask(String info, long needTime) {
-		this.info = info;
-		this.needTime = needTime;
+	public DayTask(String info, long needTime, String father) {
+		super(info, needTime, father);
 	}
 
 }

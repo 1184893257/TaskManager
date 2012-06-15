@@ -122,8 +122,8 @@ public class Top extends JFrame implements ActionListener, UpdateTable {
 		Date now = new Date();
 		String text = "<html>" + date + "<br>";
 		String start = "开机运行" + HMS(now.getTime() - today.getStartTime());
-		String total = "今日总任务" + HMS(today.tasks.getTotal());
-		String complete = "今日已完成" + HMS(today.tasks.getFinished());
+		String total = "今日总任务" + HMS(today.day.getTotal());
+		String complete = "今日已完成" + HMS(today.day.getFinished());
 		String vacancy = "空闲了"
 				+ HMS(today.isWorking() ? today.vacancy : today.vacancy
 						+ now.getTime() - today.startLazy.getTime());

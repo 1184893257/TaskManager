@@ -132,13 +132,13 @@ public class TaskTable extends JTable implements ActionListener {
 			if (frame == null)
 				frame = new TaskDialog(top);
 			frame.showup();
-			DayTask newtask = new DayTask(frame.info, frame.needTime);
+			DayTask newtask = new DayTask(frame.info, frame.needTime, null);
 
 			/* 表格模型添加一定要在任务集合添加之后,因为表格显示的时候要从任务集合中查找对应任务 */
-			today.tasks.add(newtask);
+			today.day.add(newtask);
 		} else if (cmd.equals("修改任务")) {
 			// 获得选中的要修改的任务
-			DayTask origin = today.tasks.get(this.getValueAt(
+			DayTask origin = today.day.get(this.getValueAt(
 					this.getSelectedRow(), 1));
 
 			// 设置对话框的显示
@@ -153,9 +153,9 @@ public class TaskTable extends JTable implements ActionListener {
 			String originInfo = origin.info;
 			origin.info = frame.info;
 			origin.needTime = frame.needTime;
-			today.tasks.modify(originInfo, origin);
+			today.day.modify(originInfo, origin);
 		} else if (cmd.equals("删除任务")) {
-			today.tasks.remove((String) this.getValueAt(this.getSelectedRow(),
+			today.day.remove((String) this.getValueAt(this.getSelectedRow(),
 					1));
 		}
 		// 刷新显示
@@ -187,7 +187,7 @@ public class TaskTable extends JTable implements ActionListener {
 				ans.setForeground(Color.red);
 			}
 			// 如果是已完成任务,style为0,颜色为灰
-			else if (today.tasks.get(value).finished) {
+			else if (today.day.get(value).finished) {
 				ans.setFont(ans.getFont().deriveFont(0));
 				ans.setForeground(Color.gray);
 			}

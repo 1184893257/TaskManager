@@ -1,10 +1,9 @@
 package data;
 
-import java.util.Calendar;
-import java.util.Date;
+import java.util.*;
 
 import data.task.DayTask;
-import data.tasks.Day;
+import data.tasks.*;
 
 /**
  * 运行时数据
@@ -21,7 +20,19 @@ public class Today {
 	/**
 	 * 今日的任务
 	 */
-	public Day tasks;
+	public Day day;
+	/**
+	 * 本周的任务
+	 */
+	public Week week;
+	/**
+	 * 本月的任务
+	 */
+	public Month month;
+	/**
+	 * 本年的任务
+	 */
+	public Year year;
 	/**
 	 * 指代当前任务的标记<br>
 	 * 为null表示当前无任务
@@ -53,8 +64,11 @@ public class Today {
 		Calendar date = Calendar.getInstance();
 		date.setTime(now);
 
-		// 日任务集合的构造
-		tasks = new Day(date);
+		// 读出年月周日各级任务集合
+		year = Year.newYear(date);
+		month = Month.newMonth(date, year);
+		week = Week.newWeek(date, month);
+		day = Day.newDay(date, week);
 	}
 
 	/**
@@ -92,9 +106,9 @@ public class Today {
 	 * @return 当前结束的任务最终所用的时间(单位:毫秒)
 	 */
 	public long finishCur(Date now) {
-		DayTask task = tasks.get(cur);
-		tasks.addLastTime(cur, now.getTime() - begin.getTime());
-		tasks.finish(cur);
+		DayTask task = day.get(cur);
+		day.addLastTime(cur, now.getTime() - begin.getTime());
+		day.finish(cur);
 		cur = null; // 现在没任务
 
 		// 从现在起空闲了
@@ -113,7 +127,7 @@ public class Today {
 	public void startTask(String task, Date now) {
 		cur = task;
 		begin = now;
-		used = tasks.get(cur).lastTime;
+		used = day.get(cur).lastTime;
 
 		// 从现在起工作了,把前一段空闲的时间加入到空闲时间中
 		vacancy += now.getTime() - startLazy.getTime();
@@ -128,8 +142,8 @@ public class Today {
 	 * @return 当前任务的所需时间可能已经变更
 	 */
 	public long stopTask(Date now) {
-		DayTask task = tasks.get(cur);
-		tasks.addLastTime(cur, now.getTime() - begin.getTime());
+		DayTask task = day.get(cur);
+		day.addLastTime(cur, now.getTime() - begin.getTime());
 		cur = null;
 
 		// 从现在开始又空闲了

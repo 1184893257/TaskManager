@@ -56,10 +56,10 @@ public class TaskModel extends AbstractTableModel {
 	 *            显示已完成的任务?
 	 */
 	public void showTasks(boolean showFinished) {
-		final int size = today.tasks.getSize(showFinished);
+		final int size = today.day.getSize(showFinished);
 		data = new Object[size][columnNames.length];
 
-		Iterator<Entry<String, DayTask>> it = today.tasks.iterator();
+		Iterator<Entry<String, DayTask>> it = today.day.iterator();
 		int i = 0;
 		DayTask task;
 		while (it.hasNext()) {
@@ -108,7 +108,7 @@ public class TaskModel extends AbstractTableModel {
 
 		// 没有任务的时候,激活未完成任务是可以的
 		if (!today.isWorking())
-			if (!today.tasks.get(data[row][1]).finished)
+			if (!today.day.get(data[row][1]).finished)
 				if (col == 0)
 					return true;
 				else
