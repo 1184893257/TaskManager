@@ -143,7 +143,7 @@ public class TaskModel extends AbstractTableModel {
 			today.startTask((String) data[rowIndex][1], now);
 		else
 			// 暂停一个任务
-			today.stopTask(now);
+			data[rowIndex][2] = HMS(today.stopTask(now));
 
 		// 标签可能因为此次table的修改而变化大小
 		updater.updateTaskShow();

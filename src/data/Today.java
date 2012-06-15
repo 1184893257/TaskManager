@@ -125,12 +125,15 @@ public class Today {
 	 * 
 	 * @param now
 	 *            现在的时间
+	 * @return 当前任务的所需时间可能已经变更
 	 */
-	public void stopTask(Date now) {
+	public long stopTask(Date now) {
+		DayTask task = tasks.get(cur);
 		tasks.addLastTime(cur, now.getTime() - begin.getTime());
 		cur = null;
 
 		// 从现在开始又空闲了
 		startLazy = now;
+		return task.needTime;
 	}
 }
