@@ -173,6 +173,10 @@ public class TaskTable extends JTable implements ActionListener {
 			origin.info = frame.info;
 			origin.needTime = frame.needTime;
 			today.day.modify(originInfo, origin);
+
+			// 如果修改的是当前的任务,则更新cur
+			if (today.isWorking() && today.cur.equals(originInfo))
+				today.cur = frame.info;
 		} else if (cmd.equals("删除任务")) {
 			today.day
 					.remove((String) this.getValueAt(this.getSelectedRow(), 1));
