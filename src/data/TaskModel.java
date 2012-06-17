@@ -106,29 +106,21 @@ public class TaskModel extends AbstractTableModel {
 		if (col == 1 || col == 2)
 			return false;
 
-		// 没有任务的时候,激活未完成任务是可以的
-		if (!today.isWorking())
+		// 激活一个任务或暂停一个任务
+		if (col == 0)
 			if (!today.day.get(data[row][1]).finished)
-				if (col == 0)
-					return true;
-				else
-					// 点的是第3列
-					return false;
+				return true;
 			else
 				return false;
 
-		/*
-		 * 有任务的时候,任务所在行的激活和完成是可以的, 因为第一阶段已经排除了第1,2列的情况,所以这里肯定是第0或3列
-		 */
-		else if (today.cur.equals(data[row][1]))
+		// 完成只限于正在执行的任务
+		else if (today.isWorking() && today.cur.equals(data[row][1]))
 			return true;
 		return false;
 	}
 
 	@Override
 	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-		data[rowIndex][columnIndex] = aValue;
-
 		Date now = new Date(); // 响应一个点击事件,肯定需要当前时间
 
 		// 第3列是任务完成的标志,且只可能是正在运行的任务(别的这个键按不了) 所以是当前任务完成了
@@ -139,11 +131,26 @@ public class TaskModel extends AbstractTableModel {
 		}
 
 		// 如果点的是第0列,根据aValue的状态可看出是开始一个任务还是暂停一个任务
-		else if ((boolean) aValue)// 开启一个任务
+		else if ((boolean) aValue) {// 开启一个任务
+			// 如果有别的任务正在执行,暂停它
+			if (today.isWorking()) {
+				int i;
+				for (i = 0; i < data.length; ++i)
+					if ((boolean) data[i][0]) {
+						data[i][0] = false;
+						data[i][2] = HMS(today.stopTask(now));
+						break;
+					}
+				this.fireTableRowsUpdated(i, i);
+			}
+
+			// 激活新任务
 			today.startTask((String) data[rowIndex][1], now);
-		else
+		} else
 			// 暂停一个任务
 			data[rowIndex][2] = HMS(today.stopTask(now));
+
+		data[rowIndex][columnIndex] = aValue;
 
 		// 标签可能因为此次table的修改而变化大小
 		updater.updateTaskShow();

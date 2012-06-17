@@ -196,6 +196,7 @@ public class Day extends TaskMap<DayTask, WeekTask> {
 		today.setTime(new Date());
 		Calendar t = (Calendar) today.clone();
 		t.set(2012, 6 - 1, 7);
+		today.add(Calendar.DATE, 1);
 
 		while (t.before(today)) {
 			Day aday = new Day(t, false);
