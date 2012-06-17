@@ -2,8 +2,6 @@ package data.tasks;
 
 import java.io.File;
 import java.util.*;
-import java.util.Map.Entry;
-
 import data.task.*;
 
 public class Week extends TaskMap<WeekTask, MonthTask> {
@@ -69,19 +67,7 @@ public class Week extends TaskMap<WeekTask, MonthTask> {
 			cal.add(Calendar.DATE, -1);
 			firstDayofWeek(cal);
 			Week lastWeek = new Week(cal, false);
-
-			// 循环转移上周未完成的任务到这周
-			Iterator<Entry<String, WeekTask>> it = lastWeek.iterator();
-			WeekTask d;
-			while (it.hasNext()) {
-				d = it.next().getValue();
-				if (!d.finished) {
-					tasks.put(d.info, d);
-					it.remove();
-				}
-			}
-			this.writeTasks();// 把这周的修改写入
-			lastWeek.writeTasks();// 把上周的修改写入
+			this.bringLast(lastWeek);
 		}
 	}
 

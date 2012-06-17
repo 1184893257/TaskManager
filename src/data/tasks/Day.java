@@ -55,19 +55,7 @@ public class Day extends TaskMap<DayTask, WeekTask> {
 			Calendar yesterday = (Calendar) cal.clone();// 不能修改外部传入的日期
 			yesterday.add(Calendar.DATE, -1);
 			Day y = new Day(yesterday, false);
-
-			// 循环转移昨天未完成的任务到今天
-			Iterator<Entry<String, DayTask>> it = y.iterator();
-			DayTask d;
-			while (it.hasNext()) {
-				d = it.next().getValue();
-				if (!d.finished) {
-					tasks.put(d.info, d);
-					it.remove();
-				}
-			}
-			this.writeTasks();// 把今天的修改写入
-			y.writeTasks();// 把昨天的修改写入
+			this.bringLast(y);
 		}
 	}
 

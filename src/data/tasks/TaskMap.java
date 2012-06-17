@@ -51,6 +51,26 @@ public abstract class TaskMap<E extends Task, K extends Task> {
 	protected abstract void buildDir(String dir);
 
 	/**
+	 * 从同级的上一个任务集合中转移未完成的任务到这个集合
+	 * 
+	 * @param last
+	 *            同级的上一个任务集合
+	 */
+	protected void bringLast(TaskMap<E, K> last) {
+		Iterator<Entry<String, E>> it = last.iterator();
+		E d;
+		while (it.hasNext()) {
+			d = it.next().getValue();
+			if (!d.finished) {
+				tasks.put(d.info, d);
+				it.remove();
+			}
+		}
+		this.writeTasks();// 把今天的修改写入
+		last.writeTasks();// 把昨天的修改写入
+	}
+
+	/**
 	 * 读出任务集合
 	 * 
 	 * @return 文件不存在或有异常则返回false

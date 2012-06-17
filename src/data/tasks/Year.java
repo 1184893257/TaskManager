@@ -2,8 +2,6 @@ package data.tasks;
 
 import java.io.File;
 import java.util.*;
-import java.util.Map.Entry;
-
 import data.task.*;
 
 public class Year extends TaskMap<YearTask, Task> {
@@ -41,19 +39,7 @@ public class Year extends TaskMap<YearTask, Task> {
 			Calendar cal2 = (Calendar) cal.clone();
 			cal2.add(Calendar.YEAR, -1);
 			Year lastYear = new Year(cal2, false);
-
-			// 循环转移去年未完成的任务
-			Iterator<Entry<String, YearTask>> it = lastYear.iterator();
-			YearTask d;
-			while (it.hasNext()) {
-				d = it.next().getValue();
-				if (!d.finished) {
-					tasks.put(d.info, d);
-					it.remove();
-				}
-			}
-			this.writeTasks();// 把这周的修改写入
-			lastYear.writeTasks();// 把上周的修改写入
+			this.bringLast(lastYear);
 		}
 	}
 

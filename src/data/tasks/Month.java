@@ -2,8 +2,6 @@ package data.tasks;
 
 import java.io.File;
 import java.util.*;
-import java.util.Map.Entry;
-
 import data.task.*;
 
 public class Month extends TaskMap<MonthTask, YearTask> {
@@ -43,19 +41,7 @@ public class Month extends TaskMap<MonthTask, YearTask> {
 			Calendar cal2 = (Calendar) cal.clone();
 			cal2.add(Calendar.MONTH, -1);
 			Month lastMonth = new Month(cal2, false);
-
-			// 循环转移上月未完成的任务
-			Iterator<Entry<String, MonthTask>> it = lastMonth.iterator();
-			MonthTask d;
-			while (it.hasNext()) {
-				d = it.next().getValue();
-				if (!d.finished) {
-					tasks.put(d.info, d);
-					it.remove();
-				}
-			}
-			this.writeTasks();// 把这周的修改写入
-			lastMonth.writeTasks();// 把上周的修改写入
+			this.bringLast(lastMonth);
 		}
 	}
 
