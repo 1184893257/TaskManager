@@ -13,6 +13,7 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -62,7 +63,7 @@ public class TaskTable extends JTable implements ActionListener {
 	/**
 	 * 添加任务的弹出窗体
 	 */
-	protected TaskDialog frame;
+	protected TaskDialog dialog;
 	/**
 	 * 普通任务的字体
 	 */
@@ -82,6 +83,8 @@ public class TaskTable extends JTable implements ActionListener {
 		model = (TaskModel) this.getModel();
 		this.top = top;
 		this.updater = updater;
+
+		dialog = new TaskDialog();
 
 		// 表格不显示纵向分割线
 		this.setShowVerticalLines(false);
@@ -148,37 +151,41 @@ public class TaskTable extends JTable implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		String cmd = e.getActionCommand();
 		if (cmd.equals("添加新任务")) {
-			if (frame == null)
-				frame = new TaskDialog(top);
-			frame.showup();
-			DayTask newtask = new DayTask(frame.info, frame.needTime, null);
-
-			/* 表格模型添加一定要在任务集合添加之后,因为表格显示的时候要从任务集合中查找对应任务 */
+			dialog.showAddDialog(DayTask.class, today.day.getFathers());
+			if (dialog.canceled)// 对话被取消了,内容不可信
+				return;
+			DayTask newtask = (DayTask) dialog.task;
 			today.day.add(newtask);
 		} else if (cmd.equals("修改任务")) {
-			// 获得选中的要修改的任务
+			if (this.getSelectedRow() < 0)// 没有行被选中则返回
+				return;
 			DayTask origin = today.day.get(this.getValueAt(
 					this.getSelectedRow(), 1));
+			// 如果不允许修改则返回
+			if (!today.day.isTaskEditable(origin.info)) {
+				JOptionPane.showMessageDialog(this, "已完成的任务或已有子任务的任务不能修改",
+						"修改被拒绝", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
 
-			// 设置对话框的显示
-			if (frame == null)
-				frame = new TaskDialog(top);
-			long need = origin.needTime / 1000L / 60L;
-			int minute = (int) (need % 60);
-			int hour = (int) (need / 60);
-			frame.showup(origin.info, hour, minute);
-
-			// 提交修改
-			String originInfo = origin.info;
-			origin.info = frame.info;
-			origin.needTime = frame.needTime;
-			today.day.modify(originInfo, origin);
+			dialog.showEditDialog(origin, today.day.getFathers());
+			if (dialog.canceled)// 对话被取消了,内容不可信
+				return;
+			today.day.modify(dialog.modifyInfo, (DayTask) dialog.task);
 
 			// 如果修改的是当前的任务,则更新cur
-			if (today.isWorking() && today.cur.equals(originInfo))
-				today.cur = frame.info;
+			if (today.isWorking() && today.cur.equals(dialog.modifyInfo))
+				today.cur = dialog.task.info;
 		} else if (cmd.equals("删除任务")) {
+			if (this.getSelectedRow() < 0)// 没有行被选中则返回
+				return;
 			String info = (String) this.getValueAt(this.getSelectedRow(), 1);
+			if (!today.day.isTaskEditable(info)) {// 不允许删除则返回
+				JOptionPane.showMessageDialog(this, "已完成的任务或已有子任务的任务不能删除",
+						"删除被拒绝", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+
 			today.day.remove(info);
 			if (today.isWorking() && today.cur.equals(info))
 				today.cur = null;

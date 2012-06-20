@@ -8,11 +8,9 @@ public class YearTask extends Task {
 	 * 
 	 * @param info
 	 *            任务名
-	 * @param father
-	 *            父任务
 	 */
-	public YearTask(String info, String father) {
-		super(info, 0L, father);
+	public YearTask(String info) {
+		super(info, 0L, null);
 	}
 
 }

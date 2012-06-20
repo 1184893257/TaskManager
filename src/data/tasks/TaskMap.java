@@ -1,9 +1,8 @@
 package data.tasks;
 
 import java.io.*;
-import java.util.Iterator;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.TreeMap;
 
 import javax.swing.JOptionPane;
 
@@ -183,33 +182,10 @@ public abstract class TaskMap<E extends Task, K extends Task> {
 	 * 
 	 * @param info
 	 *            要删除的任务的名称
-	 * @return 删除是否成功
 	 */
 	public void remove(String info) {
-		remove(info, "删除");
-	}
-
-	/**
-	 * 删除一个任务<br>
-	 * 也是修改任务的前奏
-	 * 
-	 * @param info
-	 *            要删除的任务
-	 * @param type
-	 *            这次删除的目地(如果出错,则显示出这个目地操作失败)
-	 * @return 删除是否成功
-	 */
-	protected boolean remove(String info, String type) {
-		E task = tasks.get(info);
-		if (task.needTime > 0) {
-			JOptionPane.showMessageDialog(null,
-					"任务" + info + "已有子任务,不能" + type, "操作被拒绝",
-					JOptionPane.ERROR_MESSAGE);
-			return false;
-		}
 		tasks.remove(info);
 		this.writeTasks();// 已修改,保存修改
-		return true;
 	}
 
 	/**
@@ -221,8 +197,20 @@ public abstract class TaskMap<E extends Task, K extends Task> {
 	 *            现在的情况
 	 */
 	public void modify(String origin, E now) {
-		if (remove(origin, "修改"))
-			add(now);
+		remove(origin);
+		add(now);
+	}
+
+	/**
+	 * 任务是否可编辑(删除,修改)
+	 * 
+	 * @param info
+	 *            任务名
+	 * @return 可编辑返回true,否则返回false
+	 */
+	public boolean isTaskEditable(String info) {
+		E task = tasks.get(info);
+		return task.needTime == 0L;
 	}
 
 	/**
@@ -267,5 +255,20 @@ public abstract class TaskMap<E extends Task, K extends Task> {
 
 		if (up != null)
 			father.addLastTime(up, time);
+	}
+
+	/**
+	 * 返回此集合的所有可能的上级任务名的集合
+	 * 
+	 * @return
+	 */
+	public LinkedList<String> getFathers() {
+		LinkedList<String> ans = new LinkedList<String>();
+		if (father != null) {
+			for (K e : father.tasks.values())
+				ans.add(e.info);
+			ans.addAll(father.getFathers());
+		}
+		return ans;
 	}
 }

@@ -118,14 +118,18 @@ public class Day extends TaskMap<DayTask, WeekTask> {
 	}
 
 	@Override
-	protected boolean remove(String info, String type) {
+	public boolean isTaskEditable(String info) {
+		return !tasks.get(info).finished;// 未完成的日任务可删除
+	}
+
+	@Override
+	public void remove(String info) {
 		DayTask task = tasks.remove(info);
 		this.writeTasks();// 已修改,保存修改
 		if (task.father != null) {
 			father.addLastTime(task.father, -task.lastTime);
 			father.addNeedTime(task.father, -task.needTime);
 		}
-		return true;
 	}
 
 	@Override
