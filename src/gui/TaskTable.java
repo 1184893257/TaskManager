@@ -2,20 +2,10 @@ package gui;
 
 import inter.UpdateTable;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Font;
-import java.awt.Frame;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.*;
+import java.awt.event.*;
 
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPopupMenu;
-import javax.swing.JTable;
+import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumnModel;
 
@@ -123,6 +113,17 @@ public class TaskTable extends JTable implements ActionListener {
 		this.normalFont = new Font(font, 0, size);
 		this.finishedFont = new Font(font, 0, size);
 		this.runningFont = new Font(font, Font.BOLD, size);
+
+		this.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_DELETE)
+					TaskTable.this.delSelectedRow();
+				// 刷新显示
+				model.showTasks(!check.isSelected());
+				TaskTable.this.updater.updateTaskShow();
+			}
+		});
 	}
 
 	/**
@@ -145,6 +146,24 @@ public class TaskTable extends JTable implements ActionListener {
 			t.addActionListener(this);
 			menu.add(t);
 		}
+	}
+
+	/**
+	 * 删除选中行
+	 */
+	protected void delSelectedRow() {
+		if (this.getSelectedRow() < 0)// 没有行被选中则返回
+			return;
+		String info = (String) this.getValueAt(this.getSelectedRow(), 1);
+		if (!today.day.isTaskEditable(info)) {// 不允许删除则返回
+			JOptionPane.showMessageDialog(this, "已完成的任务或已有子任务的任务不能删除", "删除被拒绝",
+					JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+
+		today.day.remove(info);
+		if (today.isWorking() && today.cur.equals(info))
+			today.cur = null;
 	}
 
 	@Override
@@ -177,18 +196,7 @@ public class TaskTable extends JTable implements ActionListener {
 			if (today.isWorking() && today.cur.equals(dialog.modifyInfo))
 				today.cur = dialog.task.info;
 		} else if (cmd.equals("删除任务")) {
-			if (this.getSelectedRow() < 0)// 没有行被选中则返回
-				return;
-			String info = (String) this.getValueAt(this.getSelectedRow(), 1);
-			if (!today.day.isTaskEditable(info)) {// 不允许删除则返回
-				JOptionPane.showMessageDialog(this, "已完成的任务或已有子任务的任务不能删除",
-						"删除被拒绝", JOptionPane.ERROR_MESSAGE);
-				return;
-			}
-
-			today.day.remove(info);
-			if (today.isWorking() && today.cur.equals(info))
-				today.cur = null;
+			this.delSelectedRow();
 		}
 		// 刷新显示
 		model.showTasks(!check.isSelected());

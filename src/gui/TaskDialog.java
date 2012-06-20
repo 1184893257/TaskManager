@@ -204,6 +204,7 @@ public class TaskDialog extends JDialog implements ActionListener {
 		c.fill = GridBagConstraints.NONE;
 		layout.setConstraints(ok, c);
 		add(ok);
+		this.getRootPane().setDefaultButton(ok);
 		pack();
 		this.setVisible(true);
 	}
@@ -249,6 +250,8 @@ public class TaskDialog extends JDialog implements ActionListener {
 	public void showEditDialog(Task task, LinkedList<String> fathers) {
 		this.setTitle("请修改此任务的内容");
 		canceled = false;
+		this.modifyInfo = task.info;
+		this.task = task;
 
 		// 将之前的信息显示出来,用户只改需要修改的部分
 		infoText.setText(task.info);// 原来的任务内容
