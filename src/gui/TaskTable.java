@@ -88,7 +88,6 @@ public class TaskTable extends JTable implements ActionListener {
 
 		// 添加右键菜单
 		buildMenu();
-
 		// 在鼠标release后弹出菜单
 		this.addMouseListener(new MouseAdapter() {
 
@@ -114,6 +113,9 @@ public class TaskTable extends JTable implements ActionListener {
 		this.finishedFont = new Font(font, 0, size);
 		this.runningFont = new Font(font, Font.BOLD, size);
 
+		// delete键删除
+		// 设置每次只能选中一行
+		this.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		this.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
