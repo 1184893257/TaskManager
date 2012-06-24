@@ -230,7 +230,7 @@ public class TaskDialog extends JDialog implements ActionListener {
 		else if (cla == YearTask.class)
 			task = new YearTask("NULL");
 		else {
-			JOptionPane.showMessageDialog(null, "未知的任务类型:" + cla, "程序出错了",
+			JOptionPane.showMessageDialog(this, "未知的任务类型:" + cla, "程序出错了",
 					JOptionPane.ERROR_MESSAGE);
 			canceled = true;
 			return;
