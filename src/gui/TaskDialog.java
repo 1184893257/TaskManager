@@ -14,7 +14,7 @@ public class TaskDialog extends JDialog implements ActionListener {
 	/**
 	 * 这次对话框被取消了,内容不可信
 	 */
-	public boolean canceled;
+	private boolean canceled;
 	/**
 	 * 对话框最后的编辑结果(一个任务)
 	 */
@@ -216,8 +216,9 @@ public class TaskDialog extends JDialog implements ActionListener {
 	 *            要添加的任务的类型的Class对象
 	 * @param fathers
 	 *            此任务可继承的父任务
+	 * @return 如果返回false表示这次对话被取消了,内容不可信
 	 */
-	public void showAddDialog(Class<?> cla, LinkedList<String> fathers) {
+	public boolean showAddDialog(Class<?> cla, LinkedList<String> fathers) {
 		this.setTitle("请输入新任务的信息");
 		canceled = false;
 
@@ -233,10 +234,11 @@ public class TaskDialog extends JDialog implements ActionListener {
 			JOptionPane.showMessageDialog(this, "未知的任务类型:" + cla, "程序出错了",
 					JOptionPane.ERROR_MESSAGE);
 			canceled = true;
-			return;
+			return false;
 		}
 
 		packPanels(fathers, 0);// 0是"<无>"
+		return !canceled;
 	}
 
 	/**
@@ -246,8 +248,9 @@ public class TaskDialog extends JDialog implements ActionListener {
 	 *            要修改的任务
 	 * @param fathers
 	 *            此任务可继承的父任务
+	 * @return 如果返回false表示这次对话被取消了,内容不可信
 	 */
-	public void showEditDialog(Task task, LinkedList<String> fathers) {
+	public boolean showEditDialog(Task task, LinkedList<String> fathers) {
 		this.setTitle("请修改此任务的内容");
 		canceled = false;
 		this.modifyInfo = task.info;
@@ -262,6 +265,7 @@ public class TaskDialog extends JDialog implements ActionListener {
 		minuteText.setText(Integer.toString(minute));// 原来的分
 
 		packPanels(fathers, fathers.indexOf(task.father) + 1);// +1是因为多了一项"<无>"
+		return !canceled;
 	}
 
 	@Override

@@ -172,8 +172,7 @@ public class TaskTable extends JTable implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		String cmd = e.getActionCommand();
 		if (cmd.equals("添加新任务")) {
-			dialog.showAddDialog(DayTask.class, today.day.getFathers());
-			if (dialog.canceled)// 对话被取消了,内容不可信
+			if (!dialog.showAddDialog(DayTask.class, today.day.getFathers()))// 对话被取消了,内容不可信
 				return;
 			DayTask newtask = (DayTask) dialog.task;
 			today.day.add(newtask);
@@ -189,8 +188,7 @@ public class TaskTable extends JTable implements ActionListener {
 				return;
 			}
 
-			dialog.showEditDialog(origin, today.day.getFathers());
-			if (dialog.canceled)// 对话被取消了,内容不可信
+			if (!dialog.showEditDialog(origin, today.day.getFathers()))// 对话被取消了,内容不可信
 				return;
 			today.day.modify(dialog.modifyInfo, (DayTask) dialog.task);
 
