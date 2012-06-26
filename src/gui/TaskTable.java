@@ -74,7 +74,7 @@ public class TaskTable extends JTable implements ActionListener {
 		this.top = top;
 		this.updater = updater;
 
-		dialog = new TaskDialog();
+		dialog = new TaskDialog(top);
 
 		// 表格不显示纵向分割线
 		this.setShowVerticalLines(false);
