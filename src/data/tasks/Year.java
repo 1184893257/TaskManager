@@ -51,6 +51,10 @@ public class Year extends TaskMap<YearTask, Task> {
 	 * @return cal所在年的年任务集合
 	 */
 	public static Year newYear(Calendar cal) {
-		return new Year(cal, true);
+		return newYear(cal, true);
+	}
+
+	public static Year newYear(Calendar cal, boolean bringLastYear) {
+		return new Year(cal, bringLastYear);
 	}
 }

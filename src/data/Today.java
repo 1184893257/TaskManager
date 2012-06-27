@@ -22,6 +22,10 @@ public class Today {
 	 */
 	public Day day;
 	/**
+	 * 明天的任务
+	 */
+	public Day tomorrow;
+	/**
 	 * 本周的任务
 	 */
 	public Week week;
@@ -69,6 +73,27 @@ public class Today {
 		month = Month.newMonth(date, year);
 		week = Week.newWeek(date, month);
 		day = Day.newDay(date, week);
+
+		// 初始化tomorrow,这可比today复杂啊O(∩_∩)O
+		Calendar tom = (Calendar) date.clone();
+		tom.add(Calendar.DATE, 1);
+
+		// 这3个可能跟year\month\week一样哦
+		Year tomYear;
+		Month tomMonth;
+		Week tomWeek;
+
+		// 如果今天和明天是同一年那么就不用创建年了后面同理
+		tomYear = tom.get(Calendar.YEAR) == date.get(Calendar.YEAR) ? year
+				: Year.newYear(tom, false);
+		tomMonth = tom.get(Calendar.MONTH) == date.get(Calendar.MONTH) ? month
+				: Month.newMonth(tom, tomYear, false);
+
+		Calendar temp = (Calendar) tom.clone();
+		Week.firstDayofWeek(temp);
+		tomWeek = temp.after(date) ? Week.newWeek(temp, tomMonth, false) : week;
+
+		tomorrow = Day.newDay(tom, tomWeek, false);
 	}
 
 	/**

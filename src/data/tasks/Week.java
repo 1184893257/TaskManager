@@ -37,7 +37,7 @@ public class Week extends TaskMap<WeekTask, MonthTask> {
 	 * @param cal
 	 *            要修改的日期,这个对象可能会改动
 	 */
-	protected static void firstDayofWeek(Calendar cal) {
+	public static void firstDayofWeek(Calendar cal) {
 		Calendar cal2 = (Calendar) cal.clone();
 
 		int days;// 减days天可到达这个周的周一
@@ -81,9 +81,13 @@ public class Week extends TaskMap<WeekTask, MonthTask> {
 	 * @return cal所在周的周任务集合
 	 */
 	public static Week newWeek(Calendar cal, Month father) {
+		return newWeek(cal, father, true);
+	}
+
+	public static Week newWeek(Calendar cal, Month father, boolean bringLastWeek) {
 		Calendar cal2 = (Calendar) cal.clone();
 		firstDayofWeek(cal2);
-		Week ans = new Week(cal2, true);
+		Week ans = new Week(cal2, bringLastWeek);
 		ans.father = father;
 		return ans;
 	}

@@ -65,10 +65,27 @@ public class Day extends TaskMap<DayTask, WeekTask> {
 	 * 
 	 * @param cal
 	 *            日期
+	 * @param father
+	 *            周任务集合
 	 * @return 天任务集合
 	 */
 	public static Day newDay(Calendar cal, Week father) {
-		Day d = new Day(cal, true);
+		return newDay(cal, father, true);
+	}
+
+	/**
+	 * 根据日期生成日任务集合
+	 * 
+	 * @param cal
+	 *            日期
+	 * @param father
+	 *            周任务集合
+	 * @param bringYesterday
+	 *            是否转移昨天的任务
+	 * @return 天任务集合
+	 */
+	public static Day newDay(Calendar cal, Week father, boolean bringYesterday) {
+		Day d = new Day(cal, bringYesterday);
 		d.father = father;
 		return d;
 	}

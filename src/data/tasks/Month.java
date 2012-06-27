@@ -55,7 +55,12 @@ public class Month extends TaskMap<MonthTask, YearTask> {
 	 * @return cal所在月的月任务集合
 	 */
 	public static Month newMonth(Calendar cal, Year father) {
-		Month ans = new Month(cal, true);
+		return newMonth(cal, father, true);
+	}
+
+	public static Month newMonth(Calendar cal, Year father,
+			boolean bringLastWeek) {
+		Month ans = new Month(cal, bringLastWeek);
 		ans.father = father;
 		return ans;
 	}
