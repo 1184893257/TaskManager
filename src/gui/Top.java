@@ -2,27 +2,17 @@ package gui;
 
 import inter.UpdateTable;
 
-import java.awt.Dimension;
-import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
-import java.util.Calendar;
-import java.util.Date;
+import java.awt.*;
+import java.awt.event.*;
+import java.util.*;
 
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenuItem;
-import javax.swing.JPopupMenu;
+import javax.swing.*;
 
 import data.Today;
 
 import static gui.FormatTime.*;
 
-public class Top extends JFrame implements ActionListener, UpdateTable {
+public class Top extends JDialog implements ActionListener, UpdateTable {
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -55,7 +45,7 @@ public class Top extends JFrame implements ActionListener, UpdateTable {
 	protected JCheckBoxMenuItem alwaysTop;
 
 	public Top() {
-		super("今日事今日毕");
+		this.setTitle("今日事今日毕");
 
 		// 生成运行数据
 		today = new Today();

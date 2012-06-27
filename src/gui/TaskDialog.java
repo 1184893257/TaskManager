@@ -48,9 +48,9 @@ public class TaskDialog extends JDialog implements ActionListener {
 	protected JPanel fatherPanel;
 	protected JButton ok;
 
-	public TaskDialog(Frame owner) {
-		super(owner);
-		this.setModalityType(ModalityType.DOCUMENT_MODAL);
+	public TaskDialog(Window owner) {
+		super(owner, ModalityType.DOCUMENT_MODAL);
+
 		this.setLayout(new GridBagLayout());// 设置布局管理器
 
 		this.buildInfoPanel();

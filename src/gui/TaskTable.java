@@ -47,10 +47,6 @@ public class TaskTable extends JTable implements ActionListener {
 	 */
 	protected UpdateTable updater;
 	/**
-	 * 提供给弹出窗体frame用的主窗体对象
-	 */
-	protected Frame top;
-	/**
 	 * 添加任务的弹出窗体
 	 */
 	protected TaskDialog dialog;
@@ -67,11 +63,10 @@ public class TaskTable extends JTable implements ActionListener {
 	 */
 	protected final Font runningFont;
 
-	public TaskTable(Today today, Frame top, UpdateTable updater) {
+	public TaskTable(Today today, Window top, UpdateTable updater) {
 		super(new TaskModel(today, updater));
 
 		model = (TaskModel) this.getModel();
-		this.top = top;
 		this.updater = updater;
 
 		dialog = new TaskDialog(top);
