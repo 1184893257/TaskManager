@@ -48,18 +48,22 @@ public abstract class TopTaskModel<E extends Task> extends AbstractTableModel {
 	public void showTasks(boolean showFinished) {
 		TaskMap<E, ? extends Task> tasks = getTasks();
 		final int size = tasks.getSize(showFinished);
-		data = new Object[size][colNames.length];
+		data = new Object[size + 1][colNames.length];
 
 		Iterator<Entry<String, E>> it = tasks.iterator();
 		int i = 0;
 		E task;
+		long totalNeed = 0, totalUsed = 0;// 总需时间,总用时间
 		while (it.hasNext()) {
 			task = it.next().getValue();
+			totalNeed += task.needTime;
+			totalUsed += task.lastTime;
 			if (showFinished || !task.finished)
 				data[i++] = new Object[] { task.info, HMS(task.needTime),
 						HMS(task.lastTime),
 						task.father == null ? "NULL" : task.father };
 		}
+		data[size] = new Object[] { "total", HMS(totalNeed), HMS(totalUsed), "" };
 		this.fireTableDataChanged();
 	}
 
