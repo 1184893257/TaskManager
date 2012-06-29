@@ -65,7 +65,7 @@ public class TaskDialog extends JDialog implements ActionListener {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				canceled = true;
-				TaskDialog.this.dispose();
+				TaskDialog.this.setVisible(false);
 			}
 		});
 	}
