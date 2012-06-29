@@ -1,10 +1,10 @@
-# 表格模型TopTaskModel<E extends Task>(必须为抽象类)
+# 表格模型TopTaskModel<E extends Task>(必须为抽象类)(完成)
 
-1. 构造(构造中调用showTasks(true)),构造参数:Today及其子类的对象
-1. showTasks(调用getTasks),统计总时间,father如果为null显示"NULL"
-1. abstract getTasks,返回值类型:TaskMap<E,? extends Task>
-1. isCellEditable返回false
-1. getClass返回String.class
+1. 构造(构造中调用showTasks(true)),构造参数:Today及其子类的对象(完成)
+1. showTasks(调用getTasks),统计总时间,father如果为null显示"NULL"(完成)
+1. abstract getTasks,返回值类型:TaskMap<E,? extends Task>(完成)
+1. isCellEditable返回false(完成)
+1. getClass返回String.class(完成)
 
 # 表格组件TopTaskTable<E extends Task>(非抽象类,抽象也可)
 
