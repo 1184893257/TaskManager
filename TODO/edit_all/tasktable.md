@@ -1,49 +1,46 @@
-# è¡¨æ ¼æ¨¡å‹TopTaskModel<E extends Task>(å¿…é¡»ä¸ºæŠ½è±¡ç±»)(å®Œæˆ)
+# ±í¸ñÄ£ĞÍTopTaskModel<E extends Task>(±ØĞëÎª³éÏóÀà)(Íê³É)
 
-1. æ„é€ (æ„é€ ä¸­è°ƒç”¨showTasks(true)),æ„é€ å‚æ•°:TodayåŠå…¶å­ç±»çš„å¯¹è±¡(å®Œæˆ)
-1. showTasks(è°ƒç”¨getTasks),ç»Ÿè®¡æ€»æ—¶é—´,fatherå¦‚æœä¸ºnullæ˜¾ç¤º"NULL"(å®Œæˆ)
-1. abstract getTasks,è¿”å›å€¼ç±»å‹:TaskMap<E,? extends Task>(å®Œæˆ)
-1. isCellEditableè¿”å›false(å®Œæˆ)
-1. getClassè¿”å›String.class(å®Œæˆ)
+1. ¹¹Ôì(¹¹ÔìÖĞµ÷ÓÃshowTasks(true)),¹¹Ôì²ÎÊı:Today¼°Æä×ÓÀàµÄ¶ÔÏó(Íê³É)
+1. showTasks(µ÷ÓÃgetTasks),Í³¼Æ×ÜÊ±¼ä,fatherÈç¹ûÎªnullÏÔÊ¾"NULL"(Íê³É)
+1. abstract getTasks,·µ»ØÖµÀàĞÍ:TaskMap<E,? extends Task>(Íê³É)
+1. isCellEditable·µ»Øfalse(Íê³É)
+1. getClass·µ»ØString.class(Íê³É)
 
-# è¡¨æ ¼ç»„ä»¶TopTaskTable<E extends Task>(éæŠ½è±¡ç±»,æŠ½è±¡ä¹Ÿå¯)
+# ±í¸ñ×é¼şTopTaskTable<E extends Task>(·Ç³éÏóÀà,³éÏóÒ²¿É)
 
-1. æ„é€ 
-    2. TopTaskTableçš„æ„é€ å‚æ•°
+1. ¹¹Ôì
+    2. TopTaskTableµÄ¹¹Ôì²ÎÊı
         3. TaskDialog dialog
-        3. int contentCol(æ¸²æŸ“çš„è¡Œ,äº‹ä»¶ä¸­è·å¾—ä»»åŠ¡å†…å®¹çš„åˆ—å·)
+        3. int contentCol(äÖÈ¾µÄĞĞ,ÊÂ¼şÖĞ»ñµÃÈÎÎñÄÚÈİµÄÁĞºÅ)
         3. boolean canHighlight
         3. Updater updater
         3. TopTaskTable father
         3. TopTaskModel model
-    2. èœå• åŒ…å«éšè—\æ˜¾ç¤ºå·²å®Œæˆçš„ä»»åŠ¡çš„JCheckBox
-    2. æ„é€ æ–¹æ³•ä¸­æ³¨å†Œå³é”®èœå•,ç›‘å¬deleteé”®,èœå•æŒ‰é’®
-    2. æ¸²æŸ“ä»»åŠ¡åé‚£ä¸€æ 
+    2. ²Ëµ¥ °üº¬Òş²Ø\ÏÔÊ¾ÒÑÍê³ÉµÄÈÎÎñµÄJCheckBox
+    2. ¹¹Ôì·½·¨ÖĞ×¢²áÓÒ¼ü²Ëµ¥,¼àÌıdelete¼ü,²Ëµ¥°´Å¥
+    2. äÖÈ¾ÈÎÎñÃûÄÇÒ»À¸
 1. updateFromMem,updateFromFile
-1. add remove modify, å…¶ä¸­è°ƒç”¨modelçš„getTasks
-1. actionPerformedä¸­è°ƒç”¨add remove modify,æœ€åè¿˜è¦åˆ·æ–°ä¸Šå±‚è¡¨æ ¼å’Œé¡¶å±‚ç•Œé¢
-1. æ¸²æŸ“(åªæœ‰å½“æ—¥çš„ä»»åŠ¡èƒ½è¢«æ¸²æŸ“ä¸ºçº¢ç²—,ä¹Ÿå°±æ˜¯canHighlightåªæœ‰today.dayç½®true)
+1. add remove modify, ÆäÖĞµ÷ÓÃmodelµÄgetTasks
+1. actionPerformedÖĞµ÷ÓÃadd remove modify,×îºó»¹ÒªË¢ĞÂÉÏ²ã±í¸ñºÍ¶¥²ã½çÃæ
+1. äÖÈ¾(Ö»ÓĞµ±ÈÕµÄÈÎÎñÄÜ±»äÖÈ¾Îªºì´Ö,Ò²¾ÍÊÇcanHighlightÖ»ÓĞtoday.dayÖÃtrue)
 
 ***
 
-# è¡¨æ ¼æ¨¡å‹çš„ç‰¹ä¾‹
+# ±í¸ñÄ£ĞÍµÄÌØÀı
 
-æ˜¾ç¤º-ä»Šå¤©(é¢ç›®å…¨éå•Š)(éœ€å¦å»ºä¸€ä¸ªç±»)
+ÏÔÊ¾-½ñÌì(ÃæÄ¿È«·Ç°¡)(ĞèÁí½¨Ò»¸öÀà)
 
-1. æ„é€ æ–¹æ³•ä¸­å‚æ•°
+1. ¹¹Ôì·½·¨ÖĞ²ÎÊı
     2. Today today
     2. Updater updater
-1. å®ç°getTasks,è¿”å›today.day
-1. é‡å†™isCellEditable,æ»¡è¶³ä¸€å®šæ¡ä»¶è¿”å›true
-1. é‡å†™setValueAt,å®ç°ä»»åŠ¡æ¿€æ´»\å®Œæˆ,æœ€åä½¿ç”¨updateræˆå‘˜
-1. é‡å†™showTasks
-1. é‡å†™getClass
+    2. TopTaskTable father(ÓÃÓÚsetValueÖĞË¢ĞÂ,updateFromMem¾ÍĞĞ)
+1. ÊµÏÖgetTasks,·µ»Øtoday.day
+1. ÖØĞ´isCellEditable,Âú×ãÒ»¶¨Ìõ¼ş·µ»Øtrue
+1. ÖØĞ´setValueAt,ÊµÏÖÈÎÎñ¼¤»î\Íê³É,×îºóÊ¹ÓÃupdater³ÉÔ±
+1. ÖØĞ´showTasks
+1. ÖØĞ´getClass
 
-# è¡¨æ ¼ç»„ä»¶çš„ç‰¹ä¾‹
+# ±í¸ñ×é¼şµÄÌØÀı
 
-* æ˜¾ç¤º-ä»Šå¤©(ä¸éœ€è¦å†å»ºä¸€ä¸ªç±»,å› ä¸ºæ²¡æ”¹æ„é€ æ–¹æ³•,æ²¡æœ‰æ–°çš„publicæ–¹æ³•)  
-é‡å†™modify,remove,å› ä¸ºä¿®æ”¹\åˆ é™¤çš„å¯èƒ½æ˜¯å½“å‰æ­£åœ¨æ‰§è¡Œçš„ä»»åŠ¡
-
-* ç¼–è¾‘-å¹´(éœ€å¦å»ºä¸€ä¸ªç±»)
-    1. æ­¤ç±»åŠ æˆå‘˜todayå’Œtomorrowçš„è¡¨æ ¼ç»„ä»¶
-    1. é‡å†™updateFromMem,è°ƒç”¨todayå’Œtomorrowçš„updateFromFile
+ÏÔÊ¾-½ñÌì(²»ĞèÒªÔÙ½¨Ò»¸öÀà,ÒòÎªÃ»¸Ä¹¹Ôì·½·¨,Ã»ÓĞĞÂµÄpublic·½·¨)  
+ÖØĞ´modify,remove,ÒòÎªĞŞ¸Ä\É¾³ıµÄ¿ÉÄÜÊÇµ±Ç°ÕıÔÚÖ´ĞĞµÄÈÎÎñ

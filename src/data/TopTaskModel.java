@@ -15,6 +15,8 @@ import data.tasks.TaskMap;
  * 
  * @author lqy
  * 
+ * @param <E>
+ *            此模型的任务集合中每个任务的类型
  */
 public abstract class TopTaskModel<E extends Task> extends AbstractTableModel {
 	private static final long serialVersionUID = 1L;

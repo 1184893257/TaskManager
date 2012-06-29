@@ -254,7 +254,11 @@ public class TaskDialog extends JDialog implements ActionListener {
 		this.setTitle("请修改此任务的内容");
 		canceled = false;
 		this.modifyInfo = task.info;
-		this.task = task;
+		try {
+			this.task = (Task) task.clone();
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+		}
 
 		// 将之前的信息显示出来,用户只改需要修改的部分
 		infoText.setText(task.info);// 原来的任务内容
