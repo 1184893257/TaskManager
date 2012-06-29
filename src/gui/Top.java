@@ -208,7 +208,7 @@ public class Top extends JDialog implements ActionListener, UpdateTable {
 		Dimension d = table.getSize();
 		int rows = table.getRowCount();
 		rows = rows == 0 ? 1 : rows;
-		d.height = table.getCellRect(0, 0, true).height * rows;
+		d.height = table.getRowHeight() * rows;
 		return d;
 	}
 
