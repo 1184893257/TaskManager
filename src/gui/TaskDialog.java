@@ -218,7 +218,8 @@ public class TaskDialog extends JDialog implements ActionListener {
 	 *            此任务可继承的父任务
 	 * @return 如果返回false表示这次对话被取消了,内容不可信
 	 */
-	public boolean showAddDialog(Class<?> cla, LinkedList<String> fathers) {
+	public boolean showAddDialog(Class<? extends Task> cla,
+			LinkedList<String> fathers) {
 		this.setTitle("请输入新任务的信息");
 		canceled = false;
 

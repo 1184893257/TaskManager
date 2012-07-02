@@ -76,6 +76,27 @@ public abstract class TopTaskModel<E extends Task> extends AbstractTableModel {
 	 */
 	public abstract TaskMap<E, ? extends Task> getTasks();
 
+	/**
+	 * 获得当前正在执行的任务<br>
+	 * 设置这个方法是因为表格数据模型里有Today的对象,<br>
+	 * 而表格中修改和删除的时候需要用到Today对象的cur成员,所以就借道model来获得
+	 * 
+	 * @return 当前正在执行的任务
+	 */
+	public String getCur() {
+		return aday.cur;
+	}
+
+	/**
+	 * 重设当前正在执行的任务,只有今天的日任务表格会用到这个方法
+	 * 
+	 * @param newCur
+	 *            新的当前任务
+	 */
+	public void setCur(String newCur) {
+		aday.cur = newCur;
+	}
+
 	@Override
 	public int getRowCount() {
 		return data.length;

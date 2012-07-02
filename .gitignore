@@ -1,5 +1,6 @@
 /bin
 /data
+*.class
 *.sh
 *.exe
 today
