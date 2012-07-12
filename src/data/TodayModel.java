@@ -13,7 +13,6 @@ import data.tasks.TaskMap;
 public class TodayModel extends TopTaskModel<DayTask> {
 	private static final long serialVersionUID = 1L;
 
-	protected String[] colNames = { "状态", "任务内容", "预计时间", "完成任务" };
 	protected Class<?>[] colClasses = { Boolean.class, String.class,
 			String.class, Boolean.class };
 	/**
@@ -39,9 +38,11 @@ public class TodayModel extends TopTaskModel<DayTask> {
 	 */
 	public TodayModel(Today today, Updater updater,
 			TopTaskTable<WeekTask> father) {
-		super(today);
+		colNames = new String[] { "状态", "任务内容", "预计时间", "完成任务" };
+		this.aday = today;
 		this.updater = updater;
 		this.father = father;
+		showTasks(true);
 	}
 
 	@Override
@@ -70,11 +71,6 @@ public class TodayModel extends TopTaskModel<DayTask> {
 	@Override
 	public TaskMap<DayTask, ? extends Task> getTasks() {
 		return aday.day;
-	}
-
-	@Override
-	public String getColumnName(int column) {
-		return colNames[column];
 	}
 
 	@Override

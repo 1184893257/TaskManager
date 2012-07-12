@@ -21,12 +21,18 @@ import data.tasks.TaskMap;
 public abstract class TopTaskModel<E extends Task> extends AbstractTableModel {
 	private static final long serialVersionUID = 1L;
 
-	protected String[] colNames = { "任务名", "所需时间", "已用时间", "父任务" };
+	protected String[] colNames;
 	protected Object[][] data;
 	/**
 	 * 包含了某天各个阶段的任务集合,是Today的对象或者ADay的对象
 	 */
 	protected Today aday;
+
+	/**
+	 * 给子类用的构造方法
+	 */
+	protected TopTaskModel() {
+	}
 
 	/**
 	 * 表格数据模型的构造
@@ -36,6 +42,7 @@ public abstract class TopTaskModel<E extends Task> extends AbstractTableModel {
 	 */
 	public TopTaskModel(Today aday) {
 		this.aday = aday;
+		colNames = new String[] { "任务名", "所需时间", "已用时间", "父任务" };
 		showTasks(true);
 	}
 
