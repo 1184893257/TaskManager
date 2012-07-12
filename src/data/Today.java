@@ -60,13 +60,10 @@ public class Today {
 	 */
 	public Date startLazy;
 
-	public Today() {
-		Date now = new Date();
+	public Today(Calendar date) {
+		Date now = date.getTime();
 		startup = now.getTime();
 		startLazy = now;
-
-		Calendar date = Calendar.getInstance();
-		date.setTime(now);
 
 		// 读出年月周日各级任务集合
 		year = Year.newYear(date);

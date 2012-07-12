@@ -47,13 +47,14 @@ public class Top extends JDialog implements ActionListener, UpdateTable {
 	public Top() {
 		this.setTitle("今日事今日毕");
 
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(new Date());
+
 		// 生成运行数据
-		today = new Today();
+		today = new Today(cal);
 
 		// 生成日期
 		String[] week = { "日", "一", "二", "三", "四", "五", "六" };
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(new Date());
 		date = cal.get(Calendar.YEAR) + "/" + (cal.get(Calendar.MONTH) + 1)
 				+ "/" + cal.get(Calendar.DATE) + " "
 				+ week[cal.get(Calendar.DAY_OF_WEEK) - 1];

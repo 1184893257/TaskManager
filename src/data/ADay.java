@@ -15,6 +15,11 @@ import data.tasks.*;
  * 
  */
 public class ADay extends Today {
+
+	public ADay(Calendar date) {
+		super(date);
+	}
+
 	public void setYear(Calendar cal) {
 		year = Year.newYear(cal, false);
 	}
