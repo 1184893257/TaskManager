@@ -209,6 +209,16 @@ public class TopTaskTable<E extends Task> extends JTable implements
 	}
 
 	/**
+	 * 更新本表格<br>
+	 * <p>
+	 * 不级联更新上层表格,在下拉按钮的事件中只需更新一个表格,<br>
+	 * 就会用到这个方法
+	 */
+	public void updateJustMe() {
+		model.showTasks(!check.isSelected());
+	}
+
+	/**
 	 * 添加任务的具体处理
 	 */
 	protected void add() {
