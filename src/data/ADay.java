@@ -16,18 +16,18 @@ import data.tasks.*;
  */
 public class ADay extends Today {
 	public void setYear(Calendar cal) {
-		year = Year.newYear(cal);
+		year = Year.newYear(cal, false);
 	}
 
 	public void setMonth(Calendar cal) {
-		month = Month.newMonth(cal, year);
+		month = Month.newMonth(cal, year, false);
 	}
 
 	public void setWeek(Calendar cal) {
-		week = Week.newWeek(cal, month);
+		week = Week.newWeek(cal, month, false);
 	}
 
 	public void setDay(Calendar cal) {
-		day = Day.newDay(cal, week);
+		day = Day.newDay(cal, week, false);
 	}
 }

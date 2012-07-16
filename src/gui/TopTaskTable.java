@@ -28,7 +28,7 @@ public class TopTaskTable<E extends Task> extends JTable implements
 	/**
 	 * 是E的Class对象,没法用E来获得,只好用参数传进来
 	 */
-	protected Class<? extends E> taskClass;
+	protected Class<E> taskClass;
 	/**
 	 * 单个任务编辑对话框,在添加修改任务的时候弹出
 	 */
@@ -102,8 +102,8 @@ public class TopTaskTable<E extends Task> extends JTable implements
 	 * @param model
 	 *            此表格的数据模型
 	 */
-	public TopTaskTable(Class<? extends E> taskClass, TaskDialog dialog,
-			int contentCol, boolean canHighlight, Updater updater,
+	public TopTaskTable(Class<E> taskClass, TaskDialog dialog, int contentCol,
+			boolean canHighlight, Updater updater,
 			TopTaskTable<? extends Task> father, TopTaskModel<E> model) {
 		super(model);
 		this.taskClass = taskClass;
