@@ -234,8 +234,16 @@ public class TopTaskTable<E extends Task> extends JTable implements
 				break;
 
 			TaskMap<E, ? extends Task> tasks = model.getTasks();
+
+			// 获得任务内容,如果是TOTAL则提示错误并返回
 			String info = (String) this.getValueAt(this.getSelectedRow(),
 					contentCol);
+			if (info.equals(TopTaskModel.TOTAL)) {
+				JOptionPane.showMessageDialog(this, "\"总计\"行不能删除", "删除被拒绝",
+						JOptionPane.ERROR_MESSAGE);
+				break;
+			}
+
 			if (!tasks.isTaskEditable(info)) {// 不允许删除则返回
 				JOptionPane.showMessageDialog(this, "已完成的任务或已有子任务的任务不能删除",
 						"删除被拒绝", JOptionPane.ERROR_MESSAGE);
@@ -264,8 +272,17 @@ public class TopTaskTable<E extends Task> extends JTable implements
 				break;
 
 			TaskMap<E, ? extends Task> tasks = model.getTasks();
-			E origin = tasks.get(this.getValueAt(this.getSelectedRow(),
-					contentCol));
+
+			// 获得任务内容,如果是TOTAL则提示错误并返回
+			String info = (String) this.getValueAt(this.getSelectedRow(),
+					contentCol);
+			if (info.equals(TopTaskModel.TOTAL)) {
+				JOptionPane.showMessageDialog(this, "\"总计\"行不能修改", "修改被拒绝",
+						JOptionPane.ERROR_MESSAGE);
+				break;
+			}
+
+			E origin = tasks.get(info);
 			// 如果不允许修改则返回
 			if (!tasks.isTaskEditable(origin.info)) {
 				JOptionPane.showMessageDialog(this, "已完成的任务或已有子任务的任务不能修改",
@@ -318,8 +335,11 @@ public class TopTaskTable<E extends Task> extends JTable implements
 			TaskMap<E, ? extends Task> tasks = model.getTasks();
 
 			String cur = model.getCur();
+			// 如果是"总计"行,不渲染
+			if (((String) value).equals(TopTaskModel.TOTAL))
+				;
 			// 如果是当前任务,则加粗
-			if (canHighlight && cur != null && cur.equals(value)) {
+			else if (canHighlight && cur != null && cur.equals(value)) {
 				ans.setFont(TopTaskTable.this.runningFont);
 				ans.setForeground(Color.red);
 			}

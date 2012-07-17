@@ -20,6 +20,11 @@ import data.tasks.TaskMap;
  */
 public abstract class TopTaskModel<E extends Task> extends AbstractTableModel {
 	private static final long serialVersionUID = 1L;
+	/**
+	 * 表格最后一行"总计"<br>
+	 * 此字符串是任务内容保留字,任务不得有此名字
+	 */
+	public static final String TOTAL = "总计";
 
 	protected String[] colNames;
 	protected Object[][] data;
@@ -70,7 +75,8 @@ public abstract class TopTaskModel<E extends Task> extends AbstractTableModel {
 						HMS(task.lastTime),
 						task.father == null ? "NULL" : task.father };
 		}
-		data[size] = new Object[] { "total", HMS(totalNeed), HMS(totalUsed), "" };
+		data[size] = new Object[] { TopTaskModel.TOTAL, HMS(totalNeed),
+				HMS(totalUsed), "" };
 		this.fireTableDataChanged();
 	}
 

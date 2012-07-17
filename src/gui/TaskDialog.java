@@ -6,6 +6,7 @@ import java.util.LinkedList;
 
 import javax.swing.*;
 
+import data.TopTaskModel;
 import data.task.*;
 
 public class TaskDialog extends JDialog implements ActionListener {
@@ -285,5 +286,8 @@ public class TaskDialog extends JDialog implements ActionListener {
 		else
 			JOptionPane.showMessageDialog(this, "所需时间必须大于0", "输入错误",
 					JOptionPane.WARNING_MESSAGE);
+		if (task.info.equals(TopTaskModel.TOTAL))
+			JOptionPane.showMessageDialog(this, TopTaskModel.TOTAL
+					+ "为保留字不能作为任务内容", "输入错误", JOptionPane.WARNING_MESSAGE);
 	}
 }
