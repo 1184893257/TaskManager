@@ -43,6 +43,14 @@ public class Top extends JDialog implements ActionListener, UpdateTable {
 	 * 始终置顶可选框
 	 */
 	protected JCheckBoxMenuItem alwaysTop;
+	/**
+	 * 编辑窗体
+	 */
+	protected EditorDialog editor;
+	/**
+	 * 标签右键菜单中的"编辑"项
+	 */
+	protected JMenuItem editorMenu;
 
 	public Top() {
 		this.setTitle("今日事今日毕");
@@ -100,6 +108,14 @@ public class Top extends JDialog implements ActionListener, UpdateTable {
 		add(info, "North");
 		add(table, "Center");
 
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				editor = new EditorDialog(Top.this);
+				editorMenu.setEnabled(true);
+			}
+		});
+
 		this.setUndecorated(true);
 		this.setLocation(200, 200);
 		pack();
@@ -131,7 +147,7 @@ public class Top extends JDialog implements ActionListener, UpdateTable {
 	protected void buildMenu() {
 		menu = new JPopupMenu();
 
-		String[] cmds = { "置顶", "退出", "最大", "一般", "最小" };
+		String[] cmds = { "编辑", "置顶", "退出", "最大", "一般", "最小" };
 		int i;
 		JMenuItem t;
 		for (i = 0; i < cmds.length; ++i) {
@@ -144,7 +160,11 @@ public class Top extends JDialog implements ActionListener, UpdateTable {
 			t = new JMenuItem(cmds[i]);
 			t.addActionListener(this);
 			menu.add(t);
-			if (i == 1)
+			if (cmds[i].equals("编辑")) {
+				t.setEnabled(false);
+				this.editorMenu = t;
+			}
+			if (i == 2)
 				menu.addSeparator();
 		}
 	}
@@ -162,6 +182,8 @@ public class Top extends JDialog implements ActionListener, UpdateTable {
 			this.setVisiblePlace(true, false);
 		} else if (cmd.equals("置顶")) {
 			this.setAlwaysOnTop(alwaysTop.isSelected());
+		} else if (cmd.equals("编辑")) {
+			editor.setVisible(true);
 		}
 	}
 
