@@ -2,6 +2,7 @@ package data.tasks;
 
 import java.io.File;
 import java.util.*;
+
 import data.task.*;
 
 public class Week extends TaskMap<WeekTask, MonthTask> {
@@ -52,6 +53,28 @@ public class Week extends TaskMap<WeekTask, MonthTask> {
 	}
 
 	/**
+	 * 将cal修改为所在周的最后一天
+	 * 
+	 * @param cal
+	 */
+	public static void lastDayofWeek(Calendar cal) {
+		Calendar cal2 = (Calendar) cal.clone();
+
+		int days;// 加days到这个周的星期日
+		days = cal.get(Calendar.DAY_OF_WEEK);
+		days = days == Calendar.SUNDAY ? 0 : 8 - days;
+
+		cal2.add(Calendar.DATE, days);
+		if (cal2.get(Calendar.MONTH) == cal.get(Calendar.MONTH))// 周日在这个月里
+			cal.add(Calendar.DATE, days);
+		else {
+			cal.set(Calendar.DATE, 1);
+			cal.add(Calendar.MONTH, 1);
+			cal.add(Calendar.DATE, -1);
+		}
+	}
+
+	/**
 	 * 根据日期cal构造周任务集合
 	 * 
 	 * @param cal
@@ -90,6 +113,57 @@ public class Week extends TaskMap<WeekTask, MonthTask> {
 		Week ans = new Week(cal2, bringLastWeek);
 		ans.father = father;
 		return ans;
+	}
+
+	@Override
+	public TreeMap<String, Calendar> getBrothers(Calendar cal) {
+		TreeMap<String, Calendar> ans = new TreeMap<String, Calendar>();
+
+		Calendar d = (Calendar) cal.clone();
+		d.set(Calendar.DATE, 1);
+
+		do {
+			Calendar d2 = d;
+			ans.put(this.getItemByCal(d2), d2);
+			d = (Calendar) d2.clone();
+			lastDayofWeek(d);
+			d.add(Calendar.DATE, 1);
+		} while (d.get(Calendar.MONTH) == cal.get(Calendar.MONTH));
+		return ans;
+	}
+
+	/**
+	 * 求cal是所在月的第几周
+	 * 
+	 * @param cal
+	 * @return
+	 */
+	protected int getWeekofMonth(Calendar cal) {
+		// 本月第一天是星期几?
+		Calendar cal2 = (Calendar) cal.clone();
+		cal2.set(Calendar.DATE, 1);
+		int ans = cal2.get(Calendar.DAY_OF_WEEK);
+
+		ans = ans == Calendar.SUNDAY ? 6 : ans - 2;
+		ans += cal.get(Calendar.DATE) - 1;
+		ans = ans / 7 + 1;
+		return ans;
+	}
+
+	@Override
+	public String getItemByCal(Calendar cal) {
+		Calendar d2 = (Calendar) cal.clone();
+		Calendar d3 = (Calendar) cal.clone();
+		firstDayofWeek(d2);
+		lastDayofWeek(d3);
+		return "第" + getWeekofMonth(cal) + "周 " + d2.get(Calendar.DATE) + "-"
+				+ d3.get(Calendar.DATE);
+	}
+
+	@Override
+	public String getPanelBorder(Calendar cal) {
+		return cal.get(Calendar.YEAR) + " 年 " + (cal.get(Calendar.MONTH) + 1)
+				+ " 月 " + this.getItemByCal(cal);
 	}
 
 }

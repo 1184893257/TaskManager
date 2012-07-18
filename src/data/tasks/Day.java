@@ -8,6 +8,7 @@ import data.StaticData;
 import data.task.*;
 
 import static gui.FormatTime.*;
+import static data.tasks.Week.*;
 
 /**
  * 此类包含一天的任务<br>
@@ -222,5 +223,39 @@ public class Day extends TaskMap<DayTask, WeekTask> {
 			System.out.println();
 			t.add(Calendar.DATE, 1);
 		}
+	}
+
+	@Override
+	public TreeMap<String, Calendar> getBrothers(Calendar cal) {
+		TreeMap<String, Calendar> ans = new TreeMap<String, Calendar>();
+		Calendar d1 = (Calendar) cal.clone();
+		Calendar d2 = (Calendar) cal.clone();
+		firstDayofWeek(d1);
+		lastDayofWeek(d2);
+		d2.add(Calendar.DATE, 1);
+		do {
+			ans.put(this.getItemByCal(d1), d1);
+			d1 = (Calendar) d1.clone();
+			d1.add(Calendar.DATE, 1);
+		} while (d1.before(d2));
+		return ans;
+	}
+
+	/**
+	 * 星期几的字符串数组
+	 */
+	public static final String[] WEEKDAY = { "错误", "日", "一", "二", "三", "四",
+			"五", "六" };
+
+	@Override
+	public String getItemByCal(Calendar cal) {
+		return String.format("%02d", cal.get(Calendar.DATE)) + "号" + " " + "周"
+				+ WEEKDAY[cal.get(Calendar.DAY_OF_WEEK)];
+	}
+
+	@Override
+	public String getPanelBorder(Calendar cal) {
+		return cal.get(Calendar.YEAR) + " 年 " + (cal.get(Calendar.MONTH) + 1)
+				+ " 月 " + this.getItemByCal(cal);
 	}
 }

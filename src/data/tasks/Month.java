@@ -2,6 +2,7 @@ package data.tasks;
 
 import java.io.File;
 import java.util.*;
+
 import data.task.*;
 
 public class Month extends TaskMap<MonthTask, YearTask> {
@@ -63,6 +64,28 @@ public class Month extends TaskMap<MonthTask, YearTask> {
 		Month ans = new Month(cal, bringLastWeek);
 		ans.father = father;
 		return ans;
+	}
+
+	@Override
+	public TreeMap<String, Calendar> getBrothers(Calendar cal) {
+		TreeMap<String, Calendar> ans = new TreeMap<String, Calendar>();
+		int year = cal.get(Calendar.YEAR);
+		for (int month = 0; month < 12; ++month) {
+			Calendar cal2 = (Calendar) cal.clone();
+			cal2.set(year, month, 1);
+			ans.put(this.getItemByCal(cal2), cal2);
+		}
+		return ans;
+	}
+
+	@Override
+	public String getItemByCal(Calendar cal) {
+		return String.format("%02d", (cal.get(Calendar.MONTH) + 1)) + " ÔÂ";
+	}
+
+	@Override
+	public String getPanelBorder(Calendar cal) {
+		return cal.get(Calendar.YEAR) + " Äê " + this.getItemByCal(cal);
 	}
 
 }

@@ -271,4 +271,35 @@ public abstract class TaskMap<E extends Task, K extends Task> {
 		}
 		return ans;
 	}
+
+	/**
+	 * 以一个日期为线索,找到这个日期周围的所有这个阶段的任务集合(在同一个父任务集合范围内)
+	 * <p>
+	 * 例如:cal为2012/1/1,那么一个Month对象调用getBrothers(cal) 会返回<br>
+	 * "1月"-2012/1/1 "2月"-2012/2/1 ...
+	 * 
+	 * @param cal
+	 *            日期对象
+	 * @return
+	 */
+	public abstract TreeMap<String, Calendar> getBrothers(Calendar cal);
+
+	/**
+	 * 以日期对象为源获得其代表的任务表格在下拉列表中的项
+	 * <p>
+	 * 在EditerDialog的构造方法中用到, 同时getBrothers中也会调用
+	 * 
+	 * @param cal
+	 *            日期对象
+	 * @return
+	 */
+	public abstract String getItemByCal(Calendar cal);
+
+	/**
+	 * 以一个日期为线索,求得当前表格的概要(显示在tablePane的边线上)
+	 * 
+	 * @param cal
+	 * @return
+	 */
+	public abstract String getPanelBorder(Calendar cal);
 }
