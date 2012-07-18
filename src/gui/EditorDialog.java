@@ -296,7 +296,7 @@ public class EditorDialog extends JDialog implements Updater, ActionListener {
 		// 继承大小,后面会调用update调整高,所以这里只继承了宽
 		Dimension size = curTable.getSize();
 		curTable = tables.get(cur);
-		curTable.setPreferredSize(size);
+		curTable.setSize(size);
 
 		// 移除旧表格,装载新表格
 		tablePane.removeAll();
@@ -329,7 +329,7 @@ public class EditorDialog extends JDialog implements Updater, ActionListener {
 	@Override
 	public void update() {
 		// 按照现在表格的行数,设置表格显示的最佳高度
-		Dimension size = curTable.getPreferredSize();
+		Dimension size = curTable.getSize();
 		size.height = curTable.getRowCount() * curTable.getRowHeight();
 		curTable.setPreferredSize(size);
 
