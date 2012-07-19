@@ -286,6 +286,8 @@ public class TaskDialog extends JDialog implements ActionListener {
 		else
 			JOptionPane.showMessageDialog(this, "所需时间必须大于0", "输入错误",
 					JOptionPane.WARNING_MESSAGE);
+		// 如果不是天任务,清零所需时间
+		task.needTime = task.getClass() == DayTask.class ? task.needTime : 0L;
 		if (task.info.equals(TopTaskModel.TOTAL))
 			JOptionPane.showMessageDialog(this, TopTaskModel.TOTAL
 					+ "为保留字不能作为任务内容", "输入错误", JOptionPane.WARNING_MESSAGE);

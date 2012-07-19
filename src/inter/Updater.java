@@ -8,7 +8,7 @@ package inter;
  */
 public interface Updater {
 	/**
-	 * 刷新顶层界面的布局
+	 * 界面内的某个表格有数据变化,要更新表格的高以完整显示表格
 	 */
 	public void update();
 }

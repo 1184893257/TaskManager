@@ -319,6 +319,7 @@ public class EditorDialog extends JDialog implements Updater, ActionListener {
 			for (String it : brothers.get(cur + 1).keySet())
 				downBox.addItem(it);
 			downBox.setEnabled(true);
+			downBox.setSelectedItem(selected[cur + 1]);
 		}
 
 		// …Ë÷√upButton
