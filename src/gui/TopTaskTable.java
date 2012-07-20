@@ -321,9 +321,10 @@ public class TopTaskTable<E extends Task> extends JTable implements
 		else if (cmd.equals("删除任务"))
 			remove();
 
-		// 只要不是"隐藏已完成",都应该更新此表格以上各表格的显示
-		if (!cmd.equals("隐藏已完成"))
-			this.updateFromMem();
+		if (cmd.equals("隐藏已完成"))
+			this.updateJustMe();// 如果是"隐藏已完成",只更新此表格的显示
+		else
+			this.updateFromMem();// 更新此表格以上各表格的显示
 
 		updater.update();
 	}
