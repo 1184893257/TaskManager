@@ -41,7 +41,7 @@ public class TopTaskTable<E extends Task> extends JTable implements
 	 * 允许任务内容突出显示不?<br>
 	 * 只有今天才能将任务内容变红加粗
 	 */
-	protected boolean canHighlight;
+	protected boolean isTodayTable;
 	/**
 	 * 主界面提供的刷新接口<br>
 	 * 在添加\删除操作后界面应该按新的情况重新布局
@@ -109,7 +109,7 @@ public class TopTaskTable<E extends Task> extends JTable implements
 		this.taskClass = taskClass;
 		this.dialog = dialog;
 		this.contentCol = contentCol;
-		this.canHighlight = canHighlight;
+		this.isTodayTable = canHighlight;
 		this.updater = updater;
 		this.father = father;
 		this.model = model;
@@ -161,6 +161,18 @@ public class TopTaskTable<E extends Task> extends JTable implements
 		// 渲染任务内容行
 		render = new MyRender();
 		this.getColumnModel().getColumn(contentCol).setCellRenderer(render);
+	}
+
+	/**
+	 * info是不是当前正在执行的任务<br>
+	 * 只有此类的子类TodayTable才有可能返回true
+	 * 
+	 * @param info
+	 * @return
+	 */
+	protected boolean isCur(String info) {
+		String cur = model.getCur();
+		return this.isTodayTable && cur != null && cur.equals(info);
 	}
 
 	/**
@@ -232,13 +244,8 @@ public class TopTaskTable<E extends Task> extends JTable implements
 
 	/**
 	 * 删除任务的具体处理
-	 * 
-	 * @return 假设这个表格关注的任务集合是今天的日任务集合,<br>
-	 *         那么修改可能会改动到当前正在执行的任务, 返回的是修改后当前执行的任务,<br>
-	 *         只有显示今天日任务的表格才关心这个返回值
 	 */
-	protected String remove() {
-		String cur = model.getCur();
+	protected void remove() {
 		do {
 			if (this.getSelectedRow() < 0)// 没有行被选中则返回
 				break;
@@ -254,6 +261,13 @@ public class TopTaskTable<E extends Task> extends JTable implements
 				break;
 			}
 
+			// 不允许删除当前正在执行的任务
+			if (this.isCur(info)) {
+				JOptionPane.showMessageDialog(this, "当前正在执行的行不能删除", "删除被拒绝",
+						JOptionPane.ERROR_MESSAGE);
+				break;
+			}
+
 			if (!tasks.isTaskEditable(info)) {// 不允许删除则返回
 				JOptionPane.showMessageDialog(this, "已完成的任务或已有子任务的任务不能删除",
 						"删除被拒绝", JOptionPane.ERROR_MESSAGE);
@@ -261,22 +275,14 @@ public class TopTaskTable<E extends Task> extends JTable implements
 			}
 
 			tasks.remove(info);
-			if (cur != null && cur.equals(info))
-				cur = null;
 		} while (false);
-		return cur;
 	}
 
 	/**
-	 * 修改任务的具体处理<br>
-	 * 
-	 * @return 假设这个表格关注的任务集合是今天的日任务集合,<br>
-	 *         那么修改可能会改动到当前正在执行的任务, 返回的是修改后当前执行的任务,<br>
-	 *         只有显示今天日任务的表格才关心这个返回值
+	 * 修改任务的具体处理
 	 */
 	@SuppressWarnings("unchecked")
-	protected String modify() {
-		String cur = model.getCur();
+	protected void modify() {
 		do {
 			if (this.getSelectedRow() < 0)// 没有行被选中则返回
 				break;
@@ -292,6 +298,13 @@ public class TopTaskTable<E extends Task> extends JTable implements
 				break;
 			}
 
+			// 不允许修改当前正在执行的任务
+			if (this.isCur(info)) {
+				JOptionPane.showMessageDialog(this, "当前正在执行的行不能修改", "修改被拒绝",
+						JOptionPane.ERROR_MESSAGE);
+				break;
+			}
+
 			E origin = tasks.get(info);
 			// 如果不允许修改则返回
 			if (!tasks.isTaskEditable(origin.info)) {
@@ -303,12 +316,7 @@ public class TopTaskTable<E extends Task> extends JTable implements
 			if (!dialog.showEditDialog(origin, tasks.getFathers()))// 对话被取消了,内容不可信
 				break;
 			tasks.modify(dialog.modifyInfo, (E) dialog.task);
-
-			// 如果修改的是当前的任务(只有今天的日任务集合才有当前任务这一语义),则返回新的当前任务
-			if (cur != null && cur.equals(dialog.modifyInfo))
-				cur = dialog.task.info;
 		} while (false);
-		return cur;
 	}
 
 	@Override
@@ -354,7 +362,7 @@ public class TopTaskTable<E extends Task> extends JTable implements
 			if (((String) value).equals(TopTaskModel.TOTAL))
 				;
 			// 如果是当前任务,则加粗
-			else if (canHighlight && cur != null && cur.equals(value)) {
+			else if (isTodayTable && cur != null && cur.equals(value)) {
 				ans.setFont(TopTaskTable.this.runningFont);
 				ans.setForeground(Color.red);
 			}
