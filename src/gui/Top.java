@@ -62,6 +62,15 @@ public class Top extends JDialog implements ActionListener, Updater {
 	 * 用于放置"明天","本周","本月","本年"表格, 如果"最大"的话,位于界面的"South"
 	 */
 	protected JPanel othersPanel;
+	/**
+	 * 是othersPanel中的最后一个放置的JPanel组件<br>
+	 * 用它来计算Border的宽度
+	 */
+	protected JPanel tablePanel;
+	/**
+	 * 包含一个表格的JPanel的Border的宽度
+	 */
+	protected int widthofBorder;
 
 	// 显示的3种模式:"最大","一般","最小"
 	protected static final int BIG = 0;
@@ -132,6 +141,10 @@ public class Top extends JDialog implements ActionListener, Updater {
 		add(todayTable, "Center");
 		pack();// 目的是让指示宽度的todayTable有个宽度
 		changeShowMode(BIG);// 重新装载各个组件
+
+		// 计算出Border的宽度
+		this.widthofBorder = tablePanel.getSize().width
+				- others.getFirst().getSize().width;
 
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
@@ -231,16 +244,16 @@ public class Top extends JDialog implements ActionListener, Updater {
 		for (int i = 0; it.hasNext(); ++i) {
 			// 将一个表格放到一个新的JPanel中
 			JTable table = it.next();
-			JPanel panel = new JPanel();
-			panel.setBorder(new TitledBorder(borders[i]));
-			panel.setLayout(new BorderLayout());
-			panel.add(table.getTableHeader(), "North");
-			panel.add(table, "Center");
+			tablePanel = new JPanel();
+			tablePanel.setBorder(new TitledBorder(borders[i]));
+			tablePanel.setLayout(new BorderLayout());
+			tablePanel.add(table.getTableHeader(), "North");
+			tablePanel.add(table, "Center");
 
 			if (!it.hasNext())// 如果是最后一个表格了,封闭
 				c.gridheight = GridBagConstraints.REMAINDER;
-			layout.setConstraints(panel, c);
-			othersPanel.add(panel);
+			layout.setConstraints(tablePanel, c);
+			othersPanel.add(tablePanel);
 		}
 	}
 
@@ -325,6 +338,9 @@ public class Top extends JDialog implements ActionListener, Updater {
 		rows = rows == 0 ? 1 : rows;
 		todayTable.setPreferredSize(new Dimension(width, rows
 				* todayTable.getRowHeight()));
+
+		// 减去Border的宽度
+		width -= this.widthofBorder;
 
 		// 更新others中各表格的高
 		for (JTable table : others)

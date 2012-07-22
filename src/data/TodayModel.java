@@ -13,6 +13,11 @@ import data.tasks.TaskMap;
 public class TodayModel extends TopTaskModel<DayTask> {
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * 是否在setValueAt里面的update执行中
+	 */
+	protected boolean inUpdate;
+
 	protected Class<?>[] colClasses = { Boolean.class, String.class,
 			String.class, Boolean.class };
 	/**
@@ -86,19 +91,21 @@ public class TodayModel extends TopTaskModel<DayTask> {
 
 		// 激活一个任务或暂停一个任务
 		if (columnIndex == 0)
-			if (!aday.day.get(data[columnIndex][1]).finished)
+			if (!aday.day.get(data[rowIndex][1]).finished)
 				return true;
 			else
 				return false;
 
 		// 完成只限于正在执行的任务
-		else if (aday.isWorking() && aday.cur.equals(data[columnIndex][1]))
+		else if (aday.isWorking() && aday.cur.equals(data[rowIndex][1]))
 			return true;
 		return false;
 	}
 
 	@Override
 	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+		if (inUpdate)
+			return;
 		Date now = new Date(); // 响应一个点击事件,肯定需要当前时间
 
 		// 第3列是任务完成的标志,且只可能是正在运行的任务(别的这个键按不了) 所以是当前任务完成了
@@ -132,7 +139,9 @@ public class TodayModel extends TopTaskModel<DayTask> {
 
 		// 标签可能因为此次table的修改而变化大小
 		father.updateFromMem();
+		inUpdate = true;
 		updater.update();
+		inUpdate = false;
 	}
 
 }
