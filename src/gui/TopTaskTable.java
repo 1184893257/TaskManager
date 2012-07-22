@@ -144,7 +144,7 @@ public class TopTaskTable<E extends Task> extends JTable implements
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_DELETE) {
 					remove();
-					TopTaskTable.this.model.showTasks(!check.isSelected());
+					TopTaskTable.this.updateFromMem();
 					TopTaskTable.this.updater.update();
 				}
 			}

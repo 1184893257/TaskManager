@@ -179,13 +179,13 @@ public class Day extends TaskMap<DayTask, WeekTask> {
 			else {
 				task.finished = true;
 				up = task.father;
-				this.writeTasks();// 任务标志有修改,保存
+				map.writeTasks();// 任务标志有修改,保存
 			}
 		else
 			up = info;
 
 		if (up != null)
-			finish(map.father, task.father);
+			finish(map.father, up);
 	}
 
 	/**
