@@ -1,18 +1,21 @@
 package gui;
 
-import inter.UpdateTable;
+import inter.Updater;
 
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 
-import data.Today;
+import data.*;
+import data.task.*;
+import data.tasks.TaskMap;
 
 import static gui.FormatTime.*;
 
-public class Top extends JDialog implements ActionListener, UpdateTable {
+public class Top extends JDialog implements ActionListener, Updater {
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -36,10 +39,6 @@ public class Top extends JDialog implements ActionListener, UpdateTable {
 	 */
 	protected Point origin;
 	/**
-	 * 显示任务表格
-	 */
-	protected TaskTable table;
-	/**
 	 * 始终置顶可选框
 	 */
 	protected JCheckBoxMenuItem alwaysTop;
@@ -51,6 +50,27 @@ public class Top extends JDialog implements ActionListener, UpdateTable {
 	 * 标签右键菜单中的"编辑"项
 	 */
 	protected JMenuItem editorMenu;
+	/**
+	 * "今日"表格
+	 */
+	protected TodayTable todayTable;
+	/**
+	 * "明天","本周","本月","本年"表格, 用于调整表格的宽度,别无所求
+	 */
+	protected LinkedList<TopTaskTable<? extends Task>> others;
+	/**
+	 * 用于放置"明天","本周","本月","本年"表格, 如果"最大"的话,位于界面的"South"
+	 */
+	protected JPanel othersPanel;
+
+	// 显示的3种模式:"最大","一般","最小"
+	protected static final int BIG = 0;
+	protected static final int NORMAL = 1;
+	protected static final int MINI = 2;
+	/**
+	 * 单个任务编辑对话框
+	 */
+	protected TaskDialog dialog;
 
 	public Top() {
 		this.setTitle("今日事今日毕");
@@ -71,7 +91,6 @@ public class Top extends JDialog implements ActionListener, UpdateTable {
 		info = new JLabel("");
 		updateLabel();
 		buildMenu();
-		table = new TaskTable(today, this, this);
 
 		// 添加标签的点击事件,点击一次更新一次
 		info.addMouseListener(new MouseAdapter() {
@@ -83,7 +102,7 @@ public class Top extends JDialog implements ActionListener, UpdateTable {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				updateTaskShow();
+				Top.this.update();
 			}
 
 			@Override
@@ -105,8 +124,14 @@ public class Top extends JDialog implements ActionListener, UpdateTable {
 
 		});
 
-		add(info, "North");
-		add(table, "Center");
+		dialog = new TaskDialog(this);// 单任务编辑器
+
+		this.buildTables();// 建立各级表格
+		this.packOthers();// 将others放置到othersPanel中
+
+		add(todayTable, "Center");
+		pack();// 目的是让指示宽度的todayTable有个宽度
+		changeShowMode(BIG);// 重新装载各个组件
 
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
@@ -116,10 +141,107 @@ public class Top extends JDialog implements ActionListener, UpdateTable {
 			}
 		});
 
-		this.setUndecorated(true);
 		this.setLocation(200, 200);
-		pack();
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+	}
+
+	/**
+	 * 建立各种表格
+	 */
+	protected void buildTables() {
+		others = new LinkedList<TopTaskTable<? extends Task>>();
+		TopTaskTable<? extends Task> table;
+
+		// 生成年表格
+		table = new TopTaskTable<YearTask>(YearTask.class, dialog, 0, false,
+				this, null, new TopTaskModel<YearTask>(this.today) {
+					private static final long serialVersionUID = 1L;
+
+					@Override
+					public TaskMap<YearTask, ? extends Task> getTasks() {
+						return this.aday.year;
+					}
+				});
+		others.add(table);
+
+		// 生成月表格
+		table = new TopTaskTable<MonthTask>(MonthTask.class, dialog, 0, false,
+				this, table, new TopTaskModel<MonthTask>(this.today) {
+					private static final long serialVersionUID = 1L;
+
+					@Override
+					public TaskMap<MonthTask, ? extends Task> getTasks() {
+						return this.aday.month;
+					}
+
+				});
+		others.add(table);
+
+		// 生成周表格
+		table = new TopTaskTable<WeekTask>(WeekTask.class, dialog, 0, false,
+				this, table, new TopTaskModel<WeekTask>(this.today) {
+					private static final long serialVersionUID = 1L;
+
+					@Override
+					public TaskMap<WeekTask, ? extends Task> getTasks() {
+						return this.aday.week;
+					}
+
+				});
+		others.add(table);
+
+		@SuppressWarnings("unchecked")
+		TopTaskTable<WeekTask> week = (TopTaskTable<WeekTask>) table;
+
+		// 生成"今日"表格
+		this.todayTable = new TodayTable(dialog, this, week, new TodayModel(
+				today, this, week));
+
+		// 生成"明日"表格
+		table = new TopTaskTable<DayTask>(DayTask.class, dialog, 0, false,
+				this, week, new TopTaskModel<DayTask>(this.today) {
+					private static final long serialVersionUID = 1L;
+
+					@Override
+					public TaskMap<DayTask, ? extends Task> getTasks() {
+						return this.aday.tomorrow;
+					}
+
+				});
+		others.add(table);
+	}
+
+	/**
+	 * 放置others中的表格到othersPanel中
+	 */
+	protected void packOthers() {
+		// 设置othersPanel
+		othersPanel = new JPanel();
+		GridBagLayout layout = new GridBagLayout();
+		othersPanel.setLayout(layout);
+
+		GridBagConstraints c = new GridBagConstraints();
+		c.gridwidth = GridBagConstraints.REMAINDER;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.weightx = 1.0;
+
+		// 逆序将others装入othersPanel
+		String[] borders = new String[] { "明天", "本周", "本月", "今年" };
+		Iterator<TopTaskTable<? extends Task>> it = others.descendingIterator();
+		for (int i = 0; it.hasNext(); ++i) {
+			// 将一个表格放到一个新的JPanel中
+			JTable table = it.next();
+			JPanel panel = new JPanel();
+			panel.setBorder(new TitledBorder(borders[i]));
+			panel.setLayout(new BorderLayout());
+			panel.add(table.getTableHeader(), "North");
+			panel.add(table, "Center");
+
+			if (!it.hasNext())// 如果是最后一个表格了,封闭
+				c.gridheight = GridBagConstraints.REMAINDER;
+			layout.setConstraints(panel, c);
+			othersPanel.add(panel);
+		}
 	}
 
 	/**
@@ -175,71 +297,67 @@ public class Top extends JDialog implements ActionListener, UpdateTable {
 		if (cmd.equals("退出")) {
 			this.dispose();
 		} else if (cmd.equals("最大")) {
-			this.setVisiblePlace(false, true);
+			this.changeShowMode(BIG);
 		} else if (cmd.equals("一般")) {
-			this.setVisiblePlace(true, true);
+			this.changeShowMode(NORMAL);
 		} else if (cmd.equals("最小")) {
-			this.setVisiblePlace(true, false);
+			this.changeShowMode(MINI);
 		} else if (cmd.equals("置顶")) {
 			this.setAlwaysOnTop(alwaysTop.isSelected());
 		} else if (cmd.equals("编辑")) {
 			editor.setVisible(true);
+			todayTable.updateFromFile();// 更新"今日"的上溯所有表格
+			others.getLast().updateFromFile();// 更新"明日"的上溯所有表格
+			this.update();
 		}
 	}
 
-	/**
-	 * 设置显示模式
-	 * 
-	 * @param undecorated
-	 *            无边框?
-	 * @param tableVisible
-	 *            任务表格是否可见?
-	 */
-	protected void setVisiblePlace(boolean undecorated, boolean tableVisible) {
-		this.dispose();
-		this.setUndecorated(undecorated);
-		if (tableVisible)
-			this.addTable();
-		else
-			this.removeTable();
-		this.updateTaskShow();
-		this.setVisible(true);
-	}
-
-	/**
-	 * 如果table在面板中的话,移除table
-	 */
-	protected void removeTable() {
-		if (this.isAncestorOf(table))
-			this.remove(table);
-	}
-
-	/**
-	 * 如果table不在面板中的话,加入table
-	 */
-	protected void addTable() {
-		if (!this.isAncestorOf(table))
-			this.add(table, "Center");
-	}
-
-	/**
-	 * 获得表格目前最佳的大小
-	 * 
-	 * @return
-	 */
-	protected Dimension getPreferedTableSize() {
-		Dimension d = table.getSize();
-		int rows = table.getRowCount();
-		rows = rows == 0 ? 1 : rows;
-		d.height = table.getRowHeight() * rows;
-		return d;
-	}
-
 	@Override
-	public void updateTaskShow() {
+	public void update() {
+		// 更新todayTable的大小
+		int width = todayTable.getSize().width;
+
+		/*
+		 * 因为TodayTable没有"总计"行,所以可能一行数据都没有,
+		 * <br>就将TodayTable的大小设置为至少一行的高度,以方便用户点击
+		 */
+		int rows = todayTable.getRowCount();
+		rows = rows == 0 ? 1 : rows;
+		todayTable.setPreferredSize(new Dimension(width, rows
+				* todayTable.getRowHeight()));
+
+		// 更新others中各表格的高
+		for (JTable table : others)
+			table.setPreferredSize(new Dimension(width, table.getRowCount()
+					* table.getRowHeight()));
+		// 更新标签
 		this.updateLabel();
-		table.setPreferredSize(getPreferedTableSize());
 		pack();
+	}
+
+	/**
+	 * 改为mode显示模式<br>
+	 * mode的取值为BIG\NORMAL\MINI中的一个
+	 * 
+	 * @param mode
+	 */
+	protected void changeShowMode(int mode) {
+		dispose();// 可能要设置undecorated,必须先让界面不可见
+		this.getContentPane().removeAll();// 清除内容面板内所有组件
+
+		// 添加info到"North"
+		this.add(info, "North");
+
+		switch (mode) {
+		case BIG:
+			this.add(othersPanel, "South");
+		case NORMAL:
+			this.add(todayTable, "Center");
+			break;
+		}
+		this.setUndecorated(mode != BIG);
+		update();
+		this.setVisible(true);
 	}
 
 	public static void main(String[] args) {
