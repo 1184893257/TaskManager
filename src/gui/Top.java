@@ -413,6 +413,7 @@ public class Top extends JDialog implements ActionListener, Updater {
 		// ¸üÐÂ±êÇ©
 		this.updateLabel();
 		pack();
+		pack();
 	}
 
 	/**

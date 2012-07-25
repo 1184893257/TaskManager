@@ -227,6 +227,7 @@ public abstract class TaskMap<E extends Task, K extends Task> {
 		if (task != null) {
 			up = task.father;
 			task.needTime += time;
+			task.finished = false;
 			this.writeTasks(); // 此集合已被修改
 		} else
 			up = info;
@@ -266,8 +267,7 @@ public abstract class TaskMap<E extends Task, K extends Task> {
 		LinkedList<String> ans = new LinkedList<String>();
 		if (father != null) {
 			for (K e : father.tasks.values())
-				if (!e.finished)// 只有未完成的任务才加入到父任务的选择框中
-					ans.add(e.info);
+				ans.add(e.info);
 			ans.addAll(father.getFathers());
 		}
 		return ans;
