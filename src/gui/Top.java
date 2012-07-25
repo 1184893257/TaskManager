@@ -50,18 +50,38 @@ public class Top extends JDialog implements ActionListener, Updater {
 	 * 标签右键菜单中的"编辑"项
 	 */
 	protected JMenuItem editorMenu;
+
+	// 以下是多个表格组件,及包装它们的JPanel
 	/**
 	 * "今日"表格
 	 */
 	protected TodayTable todayTable;
 	/**
-	 * "明天","本周","本月","本年"表格, 用于调整表格的宽度,别无所求
+	 * "明天"表格
+	 */
+	protected TopTaskTable<DayTask> tomorrow;
+	/**
+	 * 包含"明天"表格的JPanel
+	 */
+	protected JPanel tomorrowPanel;
+	/**
+	 * "本周","本月","本年"表格, 用于调整表格的宽度,别无所求
 	 */
 	protected LinkedList<TopTaskTable<? extends Task>> others;
 	/**
-	 * 用于放置"明天","本周","本月","本年"表格, 如果"最大"的话,位于界面的"South"
+	 * 用于放置"本周","本月","本年"表格, 如果"最大"的话,位于界面的"South"
 	 */
 	protected JPanel othersPanel;
+	/**
+	 * 被装载入Top的"Center"的JPanel<br>
+	 * 在"最大"模式中,装入所有表格
+	 */
+	protected JPanel center;
+
+	// center中各部分的布局参数
+	protected GridBagConstraints tod;
+	protected GridBagConstraints tom;
+	protected GridBagConstraints oth;
 
 	// 显示的3种模式:"最大","一般","最小"
 	protected static final int BIG = 0;
@@ -71,6 +91,10 @@ public class Top extends JDialog implements ActionListener, Updater {
 	 * 单个任务编辑对话框
 	 */
 	protected TaskDialog dialog;
+	/**
+	 * JPanel设置Border后增加的宽度
+	 */
+	protected final int widthofBorder;
 
 	public Top() {
 		this.setTitle("今日事今日毕");
@@ -126,12 +150,23 @@ public class Top extends JDialog implements ActionListener, Updater {
 
 		dialog = new TaskDialog(this);// 单任务编辑器
 
+		// 生成表格,包装表格
 		this.buildTables();// 建立各级表格
-		this.packOthers();// 将others放置到othersPanel中
+		this.packTables();// 对表格进行必要的包装
 
+		// 生成"最大"模式的容器,以及一些参数的处理
+		center = new JPanel();
+		center.setLayout(new GridBagLayout());
+		setConstr();// 设置tod\tom\oth布局参数,分别是"今天","明天",其他表格放置到center中的参数
+
+		// 初始显示模式
 		add(todayTable, "Center");
 		pack();// 目的是让指示宽度的todayTable有个宽度
 		changeShowMode(BIG);// 重新装载各个组件
+
+		// 求设置Border后增加的宽度
+		this.widthofBorder = this.tomorrowPanel.getSize().width
+				- this.tomorrow.getSize().width;
 
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
@@ -143,6 +178,28 @@ public class Top extends JDialog implements ActionListener, Updater {
 
 		this.setLocation(200, 200);
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+	}
+
+	/**
+	 * 设置tod\tom\oth布局参数
+	 */
+	protected void setConstr() {
+		// "今天"的布局参数
+		tod = new GridBagConstraints();
+		tod.fill = GridBagConstraints.HORIZONTAL;
+		tod.anchor = GridBagConstraints.NORTH;
+		tod.weightx = 0.5;
+
+		// "明天"的布局参数
+		tom = (GridBagConstraints) tod.clone();
+		tom.gridy = 1;
+		tom.gridheight = GridBagConstraints.REMAINDER;
+
+		// "其他"的布局参数
+		oth = (GridBagConstraints) tod.clone();
+		oth.gridx = 1;
+		oth.gridheight = GridBagConstraints.REMAINDER;
+		oth.gridwidth = GridBagConstraints.REMAINDER;
 	}
 
 	/**
@@ -198,8 +255,8 @@ public class Top extends JDialog implements ActionListener, Updater {
 				today, this, week));
 
 		// 生成"明日"表格
-		table = new TopTaskTable<DayTask>(DayTask.class, dialog, 0, false,
-				this, week, new TopTaskModel<DayTask>(this.today) {
+		this.tomorrow = new TopTaskTable<DayTask>(DayTask.class, dialog, 0,
+				false, this, week, new TopTaskModel<DayTask>(this.today) {
 					private static final long serialVersionUID = 1L;
 
 					@Override
@@ -208,13 +265,31 @@ public class Top extends JDialog implements ActionListener, Updater {
 					}
 
 				});
-		others.add(table);
 	}
 
 	/**
-	 * 放置others中的表格到othersPanel中
+	 * 生成一个包装table并且Border为border的JPanel
+	 * 
+	 * @param table
+	 * @param border
+	 * @return
 	 */
-	protected void packOthers() {
+	protected JPanel newTablePanel(JTable table, String border) {
+		JPanel ans = new JPanel();
+		ans.setBorder(new TitledBorder(border));
+		ans.setLayout(new BorderLayout());
+		table.getTableHeader().setPreferredSize(
+				table.getTableHeader().getMinimumSize());
+		ans.add(table.getTableHeader(), "North");
+		ans.add(table, "Center");
+		return ans;
+	}
+
+	/**
+	 * 放置others中的表格到othersPanel中<br>
+	 * 将明日表格放置到tomorrrowPanel中
+	 */
+	protected void packTables() {
 		// 设置othersPanel
 		othersPanel = new JPanel();
 		GridBagLayout layout = new GridBagLayout();
@@ -226,25 +301,20 @@ public class Top extends JDialog implements ActionListener, Updater {
 		c.weightx = 1.0;
 
 		// 逆序将others装入othersPanel
-		String[] borders = new String[] { "明天", "本周", "本月", "今年" };
+		String[] borders = new String[] { "本周", "本月", "今年" };
 		Iterator<TopTaskTable<? extends Task>> it = others.descendingIterator();
 		for (int i = 0; it.hasNext(); ++i) {
 			// 将一个表格放到一个新的JPanel中
 			JTable table = it.next();
-			JPanel tablePanel = new JPanel();
-			tablePanel.setBorder(new TitledBorder(borders[i]));
-			tablePanel.setLayout(new BorderLayout());
-			tablePanel.add(table.getTableHeader(), "North");
-			tablePanel.add(table, "Center");
-
-			// 设置tablePanel的大小为其支持的最小情况,使用用户可以尽量的压缩窗体宽度
-			tablePanel.setPreferredSize(tablePanel.getMinimumSize());
+			JPanel tablePanel = this.newTablePanel(table, borders[i]);
 
 			if (!it.hasNext())// 如果是最后一个表格了,封闭
 				c.gridheight = GridBagConstraints.REMAINDER;
 			layout.setConstraints(tablePanel, c);
 			othersPanel.add(tablePanel);
 		}
+
+		this.tomorrowPanel = this.newTablePanel(tomorrow, "明天");
 	}
 
 	/**
@@ -310,7 +380,7 @@ public class Top extends JDialog implements ActionListener, Updater {
 		} else if (cmd.equals("编辑")) {
 			editor.setVisible(true);
 			todayTable.updateFromFile();// 更新"今日"的上溯所有表格
-			others.getLast().updateFromFile();// 更新"明日"的上溯所有表格
+			tomorrow.updateFromFile();// 更新"明日"的上溯所有表格
 			this.update();
 		}
 	}
@@ -328,6 +398,17 @@ public class Top extends JDialog implements ActionListener, Updater {
 		rows = rows == 0 ? 1 : rows;
 		todayTable.setPreferredSize(new Dimension(width, rows
 				* todayTable.getRowHeight()));
+
+		// 减去Border增加的宽度
+		width -= this.widthofBorder;
+
+		// 设置"明天"表格的PreferredSize
+		tomorrow.setPreferredSize(tomorrow.getMinimumSize());
+
+		// 调整others各表格的PreferredSize
+		for (JTable table : others)
+			table.setPreferredSize(new Dimension(width, table.getRowCount()
+					* table.getRowHeight()));
 
 		// 更新标签
 		this.updateLabel();
@@ -349,7 +430,20 @@ public class Top extends JDialog implements ActionListener, Updater {
 
 		switch (mode) {
 		case BIG:
-			this.add(othersPanel, "South");
+			center.removeAll();
+			GridBagLayout layout = (GridBagLayout) center.getLayout();
+
+			layout.setConstraints(todayTable, tod);
+			center.add(todayTable);
+
+			layout.setConstraints(tomorrowPanel, tom);
+			center.add(tomorrowPanel);
+
+			layout.setConstraints(othersPanel, oth);
+			center.add(othersPanel);
+
+			this.add(center, "Center");
+			break;
 		case NORMAL:
 			this.add(todayTable, "Center");
 			break;

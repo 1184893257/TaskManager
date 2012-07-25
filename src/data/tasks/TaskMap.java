@@ -266,7 +266,8 @@ public abstract class TaskMap<E extends Task, K extends Task> {
 		LinkedList<String> ans = new LinkedList<String>();
 		if (father != null) {
 			for (K e : father.tasks.values())
-				ans.add(e.info);
+				if (!e.finished)// 只有未完成的任务才加入到父任务的选择框中
+					ans.add(e.info);
 			ans.addAll(father.getFathers());
 		}
 		return ans;
