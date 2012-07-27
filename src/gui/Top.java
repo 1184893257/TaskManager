@@ -13,7 +13,7 @@ import data.*;
 import data.task.*;
 import data.tasks.TaskMap;
 
-import static gui.FormatTime.*;
+import static gui.StaticMethod.*;
 
 public class Top extends JDialog implements ActionListener, Updater {
 	private static final long serialVersionUID = 1L;
@@ -176,7 +176,7 @@ public class Top extends JDialog implements ActionListener, Updater {
 			}
 		});
 
-		this.setLocation(200, 200);
+		locOnCenter(this);// Top的初始显示位置为屏幕的中心
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 	}
 

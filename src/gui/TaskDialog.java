@@ -1,5 +1,7 @@
 package gui;
 
+import static gui.StaticMethod.locOnCenter;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.util.LinkedList;
@@ -69,6 +71,8 @@ public class TaskDialog extends JDialog implements ActionListener {
 				TaskDialog.this.setVisible(false);
 			}
 		});
+
+		locOnCenter(this);// TaskDialog左上角的初始显示位置为屏幕的中心
 	}
 
 	/**

@@ -1,5 +1,6 @@
 package gui;
 
+import static gui.StaticMethod.locOnCenter;
 import inter.Updater;
 
 import java.awt.*;
@@ -133,6 +134,7 @@ public class EditorDialog extends JDialog implements Updater, ActionListener {
 		});
 		this.setDefaultCloseOperation(JDialog.HIDE_ON_CLOSE);
 		pack();
+		locOnCenter(this);// EditorDialog的初始显示位置为屏幕的中心
 	}
 
 	/**

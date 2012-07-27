@@ -7,7 +7,7 @@ import java.util.Map.Entry;
 import data.StaticData;
 import data.task.*;
 
-import static gui.FormatTime.*;
+import static gui.StaticMethod.*;
 import static data.tasks.Week.*;
 
 /**

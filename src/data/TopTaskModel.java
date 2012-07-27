@@ -1,6 +1,6 @@
 package data;
 
-import static gui.FormatTime.HMS;
+import static gui.StaticMethod.HMS;
 
 import java.util.Iterator;
 import java.util.Map.Entry;
