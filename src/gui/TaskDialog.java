@@ -280,20 +280,30 @@ public class TaskDialog extends JDialog implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		this.canceled = false;
+
 		task.info = infoText.getText();
 		task.needTime = Integer.parseInt(hourText.getText()) * 3600 * 1000
 				+ Integer.parseInt(minuteText.getText()) * 60 * 1000;
 		task.father = this.fathers.getSelectedIndex() == 0 ? null
 				: (String) this.fathers.getSelectedItem();
-		if (task.needTime > 0L) // 所需时间不为0
-			this.dispose();
-		else
+		if (task.getClass() != DayTask.class || task.needTime > 0L) // 所需时间不为0
+			;
+		else {
+			this.canceled = true;
 			JOptionPane.showMessageDialog(this, "所需时间必须大于0", "输入错误",
 					JOptionPane.WARNING_MESSAGE);
+		}
+
 		// 如果不是天任务,清零所需时间
 		task.needTime = task.getClass() == DayTask.class ? task.needTime : 0L;
-		if (task.info.equals(TopTaskModel.TOTAL))
-			JOptionPane.showMessageDialog(this, TopTaskModel.TOTAL
-					+ "为保留字不能作为任务内容", "输入错误", JOptionPane.WARNING_MESSAGE);
+		if (task.info.equals(TopTaskModel.TOTAL)) {
+			canceled = true;
+			JOptionPane.showMessageDialog(this, "\"" + TopTaskModel.TOTAL
+					+ "\"" + "为保留字不能作为任务内容", "输入错误",
+					JOptionPane.WARNING_MESSAGE);
+		}
+
+		this.setVisible(canceled);
 	}
 }
