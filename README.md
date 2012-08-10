@@ -137,8 +137,7 @@
 [hohoo]: http://fmn.rrimg.com/fmn065/20120804/2125/original_Aqna_1b5c00002ce5118d.jpg "HoHoo"
 [mess]: http://fmn.rrimg.com/fmn063/20120808/0900/original_myH6_412b000037b21260.jpg "乱糟糟"
 [tasklist]: http://fmn.rrimg.com/fmn065/20120808/0900/original_XoK2_0c420000e3c6125d.jpg "eclipse Task List"
-[taskmanager]: http://fmn.rrimg.com/fmn056/20120808/0900/original_CQI4_027d00000ec2118e.jpg
-"今日事今日毕"
+[taskmanager]: http://fmn.rrimg.com/fmn056/20120808/0900/original_CQI4_027d00000ec2118e.jpg "今日事今日毕"
 
 ---------------------
 
@@ -257,25 +256,20 @@
 
 	右键菜单中选择"添加新任务"就打开了添加任务对话框,
 **这对话框会因为编辑不同的任务,显示不同的组件**:
-
 	1. 添加年任务
 
 		![year][]
-
 	2. 添加月任务
 
 		![month][]
-
 	3. 添加周任务
 
 		![week][]
-
 	4. 添加天任务
 
 		![day][]
 
 	关于这个单任务编辑对话框:
-
 	* 编辑完成后可以左键单击确定按钮完成操作,
 **也可以直接回车**
 
@@ -303,7 +297,6 @@
 	![fathertree][]
 
 	各任务关系的规则:
-
 	* 一个任务可以隶属于一个更高级的任务(比它高1级或多级),
 	也可以不隶属于任何一个任务
 	* 一个高级任务的所需时间和已用时间是所有隶属于它的
@@ -367,18 +360,15 @@
 
 	下面演示怎么将前面添加在"今日"
 表格中的任务"1.将冰箱门打开"转移到"明天":
-
 	1. 修改要转移的任务,
 	**打开对话框后直接点关闭窗体按钮**
 
 		![tranm][]
-
 	1. 删除该任务
 
 		删除"1.将冰箱门打开"后:
 
 		![trand][]
-
 	1. 在"明天"添加一个任务,
 	**对话框已经"预测"到了我们要添加的内容**  
 	O(∩_∩)O~
@@ -393,13 +383,12 @@
 	其中第2步和第3步可以交换先后顺序
 
 	这么做的原理是:
-
 	* 修改任务会读取任务内容设置各个组件
 	* 添加任务的时候不擦除组件之前的设置
 
 	所以**任务名\所需时间会被"记住"**
 
-[回顶部][top]
+	[回顶部][top]
 
 [tranm]: http://fmn.rrfmn.com/fmn058/20120808/0905/original_rtBj_28e6000060ff118f.jpg "修改要转移的任务"
 [trand]: http://fmn.rrimg.com/fmn060/20120808/0900/original_EnaR_0bb0000019d5125b.jpg "删除要转移的任务"
@@ -493,10 +482,8 @@
 
 [start]: http://fmn.rrfmn.com/fmn058/20120808/0905/original_PGHd_14c700005e65125d.jpg "激活一个任务后"
 [finish]: http://fmn.rrimg.com/fmn056/20120808/0905/original_XEDW_035600003d60118d.jpg "完成一个任务后"
-[fatherfin]: http://fmn.rrfmn.com/fmn058/20120808/0905/original_hwTl_158a00005e66125c.jpg
-"完成所有子任务后"
-[fathercb]: http://fmn.rrimg.com/fmn057/20120808/0905/original_hitB_36fa00001975125d.jpg
-"复活已完成的高级任务"
+[fatherfin]: http://fmn.rrfmn.com/fmn058/20120808/0905/original_hwTl_158a00005e66125c.jpg "完成所有子任务后"
+[fathercb]: http://fmn.rrimg.com/fmn057/20120808/0905/original_hitB_36fa00001975125d.jpg "复活已完成的高级任务"
 
 ------------------
 
@@ -645,7 +632,6 @@ run.bat 的内容如下:
 
 	如果你喜欢这个程序,一定想将这个程序设为开机启动,
 这样就省事多了.设置开机启动也很简单:
-
 	1. 创建start.vbs的快捷方式
 	1. 将start.vbs的快捷方式移动到 **启动** 文件夹中
 		* Win7 在 开始 中
