@@ -380,7 +380,11 @@ public class Top extends JDialog implements ActionListener, Updater {
 		} else if (cmd.equals("编辑")) {
 			editor.setVisible(true);
 			todayTable.updateFromFile();// 更新"今日"的上溯所有表格
-			tomorrow.updateFromFile();// 更新"明日"的上溯所有表格
+
+			// 更新明日表格
+			today.tomorrow.updateFromFile();
+			tomorrow.updateJustMe();
+
 			this.update();
 		}
 	}

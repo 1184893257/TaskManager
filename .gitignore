@@ -4,3 +4,4 @@
 *.sh
 *.exe
 today
+/.settings/org.eclipse.jdt.core.prefs

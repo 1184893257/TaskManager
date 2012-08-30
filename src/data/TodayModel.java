@@ -111,12 +111,12 @@ public class TodayModel extends TopTaskModel<DayTask> {
 		}
 
 		// 如果点的是第0列,根据aValue的状态可看出是开始一个任务还是暂停一个任务
-		else if ((boolean) aValue) {// 开启一个任务
+		else if ((Boolean) aValue) {// 开启一个任务
 			// 如果有别的任务正在执行,暂停它
 			if (aday.isWorking()) {
 				int i;
 				for (i = 0; i < data.length; ++i)
-					if ((boolean) data[i][0]) {
+					if ((Boolean) data[i][0]) {
 						data[i][0] = false;
 						data[i][2] = HMS(aday.stopTask(now));
 						break;

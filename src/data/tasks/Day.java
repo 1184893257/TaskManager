@@ -258,4 +258,14 @@ public class Day extends TaskMap<DayTask, WeekTask> {
 		return cal.get(Calendar.YEAR) + " 年 " + (cal.get(Calendar.MONTH) + 1)
 				+ " 月 " + this.getItemByCal(cal);
 	}
+
+	/**
+	 * father链上的所有对象重新从文件中读出<br>
+	 * 只有明天会调用
+	 */
+	public void updateFromFile() {
+		TaskMap<? extends Task, ? extends Task> tasks;
+		for (tasks = this; tasks != null; tasks = tasks.father)
+			tasks.readTasks();
+	}
 }
