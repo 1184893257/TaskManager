@@ -88,10 +88,6 @@ public class Top extends JDialog implements ActionListener, Updater {
 	protected static final int NORMAL = 1;
 	protected static final int MINI = 2;
 	/**
-	 * 单个任务编辑对话框
-	 */
-	protected TaskDialog dialog;
-	/**
 	 * JPanel设置Border后增加的宽度
 	 */
 	protected final int widthofBorder;
@@ -147,8 +143,6 @@ public class Top extends JDialog implements ActionListener, Updater {
 			}
 
 		});
-
-		dialog = new TaskDialog(this);// 单任务编辑器
 
 		// 生成表格,包装表格
 		this.buildTables();// 建立各级表格
@@ -208,6 +202,8 @@ public class Top extends JDialog implements ActionListener, Updater {
 	protected void buildTables() {
 		others = new LinkedList<TopTaskTable<? extends Task>>();
 		TopTaskTable<? extends Task> table;
+
+		TaskDialog dialog = new TaskDialog(this);// 单任务编辑器
 
 		// 生成年表格
 		table = new TopTaskTable<YearTask>(YearTask.class, dialog, 0, false,

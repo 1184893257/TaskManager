@@ -19,10 +19,6 @@ public class EditorDialog extends JDialog implements Updater, ActionListener {
 
 	// 以下几个是组件
 	/**
-	 * 单个任务编辑对话框
-	 */
-	protected TaskDialog dialog;
-	/**
 	 * 向上的按钮
 	 */
 	protected JButton upButton;
@@ -93,7 +89,6 @@ public class EditorDialog extends JDialog implements Updater, ActionListener {
 		this.curDate = cal;
 
 		aday = new ADay(cal);// 生成编辑窗体的任务集合的集合
-		dialog = new TaskDialog(this);// 生成本对话框的单任务编辑对话框
 
 		buildTables();// 生成tables
 
@@ -138,6 +133,8 @@ public class EditorDialog extends JDialog implements Updater, ActionListener {
 	protected void buildTables() {
 		tables = new ArrayList<TopTaskTable<? extends Task>>(LEN);
 		TopTaskTable<? extends Task> table;
+
+		TaskDialog dialog = new TaskDialog(this);// 生成本对话框的单任务编辑对话框
 
 		// 生成年表格
 		table = new TopTaskTable<YearTask>(YearTask.class, dialog, 0, false,
