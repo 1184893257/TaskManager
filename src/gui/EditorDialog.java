@@ -79,11 +79,6 @@ public class EditorDialog extends JDialog implements Updater, ActionListener {
 	protected static final int LEN = 4;
 
 	/**
-	 * 指示是不是在newView中,如果在newView中不响应action事件
-	 */
-	protected boolean inNewView;
-
-	/**
 	 * 构造编辑窗体
 	 * 
 	 * @param owner
@@ -308,20 +303,25 @@ public class EditorDialog extends JDialog implements Updater, ActionListener {
 				this.curDate)));
 
 		// 设置floorBox
+		// 改变floorBox前移除Action侦听器,以免导致递归调回newView而死循环,最终崩溃
+		floorBox.removeActionListener(this);
 		floorBox.removeAllItems();
-		for (String it : brothers.get(cur).keySet())
-			floorBox.addItem(it);
+		floorBox.setModel(new DefaultComboBoxModel<String>(new Vector<String>(
+				brothers.get(cur).keySet())));
 		floorBox.setSelectedItem(selected[cur]);
+		floorBox.addActionListener(this);
 
 		// 设置downBox
 		if (cur + 1 == LEN)
 			downBox.setEnabled(false);
 		else {
+			downBox.removeActionListener(this);
 			downBox.removeAllItems();
-			for (String it : brothers.get(cur + 1).keySet())
-				downBox.addItem(it);
+			downBox.setModel(new DefaultComboBoxModel<String>(
+					new Vector<String>(brothers.get(cur + 1).keySet())));
 			downBox.setEnabled(true);
 			downBox.setSelectedItem(selected[cur + 1]);
+			downBox.addActionListener(this);
 		}
 
 		// 设置upButton
@@ -359,8 +359,6 @@ public class EditorDialog extends JDialog implements Updater, ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if (inNewView)
-			return;
 		Object source = e.getSource();
 		if (source == upButton)// 向上
 			cur--;
@@ -373,9 +371,6 @@ public class EditorDialog extends JDialog implements Updater, ActionListener {
 			curSelect(s);
 		}
 
-		// 为了避免newView中操作触发action事件而死循环嵌套调用newView, 这里给加了个检测变量
-		this.inNewView = true;
 		newView(); // 根据成员变量的值,设置新界面
-		this.inNewView = false;
 	}
 }
