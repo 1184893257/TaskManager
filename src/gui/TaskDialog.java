@@ -2,6 +2,8 @@ package gui;
 
 import static gui.StaticMethod.locOnCenter;
 
+import gui.comps.TimePanel;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.util.LinkedList;
@@ -33,13 +35,9 @@ public class TaskDialog extends JDialog implements ActionListener {
 	 */
 	protected JTextField infoText;
 	/**
-	 * 填写预计需要时间的小时部分
+	 * 获取时间的组件
 	 */
-	protected JTextField hourText;
-	/**
-	 * 填写预计需要时间的分钟部分
-	 */
-	protected JTextField minuteText;
+	protected TimePanel time;
 	/**
 	 * 可供选择的所有父任务,第一项是无(表示没有父任务)
 	 */
@@ -110,32 +108,18 @@ public class TaskDialog extends JDialog implements ActionListener {
 
 		// 添加所需时间标签
 		JLabel label = new JLabel("所需时间:");
-		layout.setConstraints(label, c);
-		this.timePanel.add(label);
-
-		// 添加小时输入框
-		hourText = new JTextField("0", 2);
-		c.gridx = GridBagConstraints.RELATIVE;
-		c.weightx = 0.5;
+		c.gridheight = GridBagConstraints.REMAINDER;
 		c.fill = GridBagConstraints.BOTH;
-		layout.setConstraints(hourText, c);
-		this.timePanel.add(hourText);
-
-		label = new JLabel("小时");
-		c.weightx = 0.0;
 		layout.setConstraints(label, c);
 		this.timePanel.add(label);
 
-		// 添加分钟输入框
-		minuteText = new JTextField("3", 2);
-		c.weightx = 0.5;
-		layout.setConstraints(minuteText, c);
-		this.timePanel.add(minuteText);
-
-		label = new JLabel("分钟");
-		c.weightx = 0.0;
-		layout.setConstraints(label, c);
-		this.timePanel.add(label);
+		// 添加时间组件
+		this.time = new TimePanel();
+		c.gridy = 0;
+		c.gridwidth = GridBagConstraints.REMAINDER;
+		c.weightx = 1.0;
+		layout.setConstraints(time, c);
+		timePanel.add(time);
 	}
 
 	/**
@@ -268,11 +252,7 @@ public class TaskDialog extends JDialog implements ActionListener {
 
 		// 将之前的信息显示出来,用户只改需要修改的部分
 		infoText.setText(task.info);// 原来的任务内容
-		long need = task.needTime / 1000L / 60L;
-		int minute = (int) (need % 60);
-		int hour = (int) (need / 60);
-		hourText.setText(Integer.toString(hour));// 原来的小时
-		minuteText.setText(Integer.toString(minute));// 原来的分
+		time.setTime(task.needTime);// 原来的所需时间
 
 		packPanels(fathers, fathers.indexOf(task.father) + 1);// +1是因为多了一项"<无>"
 		return !canceled;
@@ -283,8 +263,7 @@ public class TaskDialog extends JDialog implements ActionListener {
 		this.canceled = false;
 
 		task.info = infoText.getText();
-		task.needTime = Integer.parseInt(hourText.getText()) * 3600 * 1000
-				+ Integer.parseInt(minuteText.getText()) * 60 * 1000;
+		task.needTime = time.getTime();
 		task.father = this.fathers.getSelectedIndex() == 0 ? null
 				: (String) this.fathers.getSelectedItem();
 		if (task.getClass() != DayTask.class || task.needTime > 0L) // 所需时间不为0

@@ -248,7 +248,7 @@ public class Top extends JDialog implements ActionListener, Updater {
 
 		// 生成"今日"表格
 		this.todayTable = new TodayTable(dialog, this, week, new TodayModel(
-				today, this, week));
+				this, today, this, week));
 
 		// 生成"明日"表格
 		this.tomorrow = new TopTaskTable<DayTask>(DayTask.class, dialog, 0,

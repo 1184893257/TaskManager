@@ -139,6 +139,19 @@ public class Today {
 	}
 
 	/**
+	 * 完成任务task,任务所用时间为time
+	 * 
+	 * @param task
+	 *            任务名
+	 * @param time
+	 *            所用时间
+	 */
+	public void finish(String task, long time) {
+		day.addLastTime(task, time - day.get(task).lastTime);
+		day.finish(task);
+	}
+
+	/**
 	 * 开启一个新任务
 	 * 
 	 * @param task

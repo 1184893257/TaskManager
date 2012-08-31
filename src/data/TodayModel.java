@@ -2,11 +2,13 @@ package data;
 
 import static gui.StaticMethod.HMS;
 
+import java.awt.Window;
 import java.util.*;
 import java.util.Map.Entry;
 
 import javax.swing.SwingUtilities;
 
+import gui.FinishDialog;
 import gui.TopTaskTable;
 import inter.Updater;
 import data.task.*;
@@ -27,10 +29,16 @@ public class TodayModel extends TopTaskModel<DayTask> {
 	 * 用于在setValueAt后更新父表格
 	 */
 	protected TopTaskTable<WeekTask> father;
+	/**
+	 * 可提供所用时间的对话框
+	 */
+	protected FinishDialog finisher;
 
 	/**
 	 * 构造今天的表格模型
 	 * 
+	 * @param owner
+	 *            是finisher的owner
 	 * @param today
 	 *            Today的对象
 	 * @param updater
@@ -38,8 +46,9 @@ public class TodayModel extends TopTaskModel<DayTask> {
 	 * @param father
 	 *            周任务的表格
 	 */
-	public TodayModel(Today today, Updater updater,
+	public TodayModel(Window owner, Today today, Updater updater,
 			TopTaskTable<WeekTask> father) {
+		finisher = new FinishDialog(owner);
 		colNames = new String[] { "状态", "任务内容", "预计时间", "完成任务" };
 		this.aday = today;
 		this.updater = updater;
@@ -86,28 +95,34 @@ public class TodayModel extends TopTaskModel<DayTask> {
 		if (columnIndex == 1 || columnIndex == 2)
 			return false;
 
-		// 激活一个任务或暂停一个任务
-		if (columnIndex == 0)
-			if (!aday.day.get(data[rowIndex][1]).finished)
-				return true;
-			else
-				return false;
-
-		// 完成只限于正在执行的任务
-		else if (aday.isWorking() && aday.cur.equals(data[rowIndex][1]))
-			return true;
-		return false;
+		// 已完成的任务不能进行 激活\中断\完成 操作
+		if (aday.day.get(data[rowIndex][1]).finished)
+			return false;
+		return true;
 	}
 
 	@Override
 	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
 		Date now = new Date(); // 响应一个点击事件,肯定需要当前时间
 
-		// 第3列是任务完成的标志,且只可能是正在运行的任务(别的这个键按不了) 所以是当前任务完成了
+		// 第3列是任务完成的标志
 		if (columnIndex == 3) {
+			String task = (String) data[rowIndex][1];
+			long time = 0L;
+
+			if (task.equals(aday.cur)) {// 完成的是当前任务
+				time = aday.finishCur(now);
+			} else if (finisher.showFinishDialog()) {// 完成的不是当前任务
+				time = finisher.getFinishTime();
+				aday.finish(task, time);
+			} else
+				return;// 用户自己取消了此次完成操作
+
 			// 清除激活选择框的选中状态
 			data[rowIndex][0] = false;
-			data[rowIndex][2] = HMS(aday.finishCur(now));
+			data[rowIndex][2] = HMS(time);
+			data[rowIndex][3] = true;
+			this.fireTableRowsUpdated(rowIndex, rowIndex);
 		}
 
 		// 如果点的是第0列,根据aValue的状态可看出是开始一个任务还是暂停一个任务
