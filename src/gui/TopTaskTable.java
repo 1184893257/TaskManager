@@ -2,12 +2,14 @@ package gui;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Comparator;
 
 import inter.Updater;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 
+import data.Cmps;
 import data.TopTaskModel;
 import data.task.Task;
 import data.tasks.TaskMap;
@@ -83,6 +85,13 @@ public class TopTaskTable<E extends Task> extends JTable implements
 	 * 任务内容列的渲染器
 	 */
 	protected MyRender render;
+
+	// 排序相关的4个菜单项
+	protected JCheckBoxMenuItem reversed;
+	protected JRadioButtonMenuItem nameSort;
+	protected JRadioButtonMenuItem needSort;
+	protected JRadioButtonMenuItem lastSort;
+	protected ButtonGroup sortGroup;
 
 	/**
 	 * 构造任务表格
@@ -196,6 +205,30 @@ public class TopTaskTable<E extends Task> extends JTable implements
 			t.addActionListener(this);
 			menu.add(t);
 		}
+
+		menu.addSeparator();// 添加一个分隔符
+
+		// 添加逆序可选菜单
+		reversed = new JCheckBoxMenuItem("逆序");
+		reversed.setSelected(false);// 默认正序
+		reversed.addActionListener(this);
+		menu.add(reversed);
+
+		// 添加3个排序选项
+		String[] sorts = { "任务名排序", "所需时间排序", "所用时间排序" };
+		sortGroup = new ButtonGroup();
+		JRadioButtonMenuItem[] sorters = new JRadioButtonMenuItem[sorts.length];
+		for (i = 0; i < sorts.length; ++i) {
+			sorters[i] = new JRadioButtonMenuItem(sorts[i]);
+			sorters[i].addActionListener(this);
+			sorters[i].getModel().setActionCommand(sorts[i]);
+			sortGroup.add(sorters[i]);
+			menu.add(sorters[i]);
+		}
+		nameSort = sorters[0];
+		needSort = sorters[1];
+		lastSort = sorters[2];
+		nameSort.setSelected(true);// 默认按任务名排序
 	}
 
 	/**
@@ -319,20 +352,49 @@ public class TopTaskTable<E extends Task> extends JTable implements
 		} while (false);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String cmd = e.getActionCommand();
+
+		// 可能更改了上层表格?改了的话就得级联更新表格,没改就只要更新本表格
+		boolean fatherModified = true;
+
 		if (cmd.equals("添加新任务"))
 			add();
 		else if (cmd.equals("修改任务"))
 			modify();
 		else if (cmd.equals("删除任务"))
 			remove();
-
-		if (cmd.equals("隐藏已完成"))
-			this.updateJustMe();// 如果是"隐藏已完成",只更新此表格的显示
 		else
+			fatherModified = false;
+
+		// 是添加/修改/删除?
+		if (fatherModified) {
 			this.updateFromMem();// 更新此表格以上各表格的显示
+			updater.update();
+			return;
+		}
+
+		// 是隐藏或重新排序
+		if (cmd.equals("隐藏已完成"))
+			;
+		else {// 重新设置排序方式
+			cmd = sortGroup.getSelection().getActionCommand();
+			int pos = 0;
+			if (cmd.equals("任务名排序"))
+				pos = 0;
+			else if (cmd.equals("所需时间排序"))
+				pos = 1;
+			else if (cmd.equals("所用时间排序"))
+				pos = 2;
+			else
+				System.err.println("没有<" + cmd + ">排序方式");
+
+			model.setCmp((Comparator<Task>) Cmps.cmps[reversed.isSelected() ? 1
+					: 0][pos]);
+		}
+		this.updateJustMe();
 
 		updater.update();
 	}

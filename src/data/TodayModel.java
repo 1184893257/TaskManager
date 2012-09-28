@@ -4,8 +4,6 @@ import static gui.StaticMethod.HMS;
 
 import java.awt.Window;
 import java.util.*;
-import java.util.Map.Entry;
-
 import javax.swing.SwingUtilities;
 
 import gui.FinishDialog;
@@ -63,11 +61,11 @@ public class TodayModel extends TopTaskModel<DayTask> {
 		final int size = tasks.getSize(showFinished);
 		data = new Object[size][colNames.length];
 
-		Iterator<Entry<String, DayTask>> it = tasks.iterator();
+		Iterator<DayTask> it = tasks.iterator(cmp);
 		int i = 0;
 		DayTask task;
 		while (it.hasNext()) {
-			task = it.next().getValue();
+			task = it.next();
 			if (showFinished || !task.finished)
 				data[i++] = new Object[] {
 						// 当前任务为true

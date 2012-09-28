@@ -150,6 +150,22 @@ public abstract class TaskMap<E extends Task, K extends Task> {
 	}
 
 	/**
+	 * 按比较器c的升序排列任务
+	 * 
+	 * @param c
+	 *            比较器,<b>如果为null则返回默认的以任务名排序的迭代器</b>
+	 * @return 排序好的list的迭代器
+	 */
+	public Iterator<E> iterator(Comparator<Task> c) {
+		if (c == null)
+			return tasks.values().iterator();
+
+		LinkedList<E> list = new LinkedList<E>(tasks.values());
+		Collections.sort(list, c);
+		return list.iterator();
+	}
+
+	/**
 	 * 获取任务
 	 * 
 	 * @param info

@@ -2,9 +2,8 @@ package data;
 
 import static gui.StaticMethod.HMS;
 
+import java.util.Comparator;
 import java.util.Iterator;
-import java.util.Map.Entry;
-
 import javax.swing.table.AbstractTableModel;
 
 import data.task.Task;
@@ -32,6 +31,10 @@ public abstract class TopTaskModel<E extends Task> extends AbstractTableModel {
 	 * 包含了某天各个阶段的任务集合,是Today的对象或者ADay的对象
 	 */
 	protected Today aday;
+	/**
+	 * 用于此表格排序的比较器
+	 */
+	protected Comparator<Task> cmp;
 
 	/**
 	 * 给子类用的构造方法
@@ -52,6 +55,16 @@ public abstract class TopTaskModel<E extends Task> extends AbstractTableModel {
 	}
 
 	/**
+	 * 设置比较器以改变排序方式
+	 * 
+	 * @param cmp
+	 *            比较器
+	 */
+	public void setCmp(Comparator<Task> cmp) {
+		this.cmp = cmp;
+	}
+
+	/**
 	 * 刷新显示所有任务的信息
 	 * 
 	 * @param showFinished
@@ -62,12 +75,12 @@ public abstract class TopTaskModel<E extends Task> extends AbstractTableModel {
 		final int size = tasks.getSize(showFinished);
 		data = new Object[size + 1][colNames.length];
 
-		Iterator<Entry<String, E>> it = tasks.iterator();
+		Iterator<E> it = tasks.iterator(cmp);
 		int i = 0;
 		E task;
 		long totalNeed = 0, totalUsed = 0;// 总需时间,总用时间
 		while (it.hasNext()) {
-			task = it.next().getValue();
+			task = it.next();
 			totalNeed += task.needTime;
 			totalUsed += task.lastTime;
 			if (showFinished || !task.finished)
