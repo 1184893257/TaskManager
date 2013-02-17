@@ -88,4 +88,20 @@ public class Month extends TaskMap<MonthTask, YearTask> {
 		return cal.get(Calendar.YEAR) + " Äê " + this.getItemByCal(cal);
 	}
 
+	@Override
+	public Calendar firstDay(Calendar cal) {
+		Calendar c = (Calendar) cal.clone();
+		c.set(Calendar.DATE, 1);
+		return c;
+	}
+
+	@Override
+	public Calendar lastDay(Calendar cal) {
+		Calendar c = (Calendar) cal.clone();
+		c.set(Calendar.DATE, 1);
+		c.add(Calendar.MONTH, 1);
+		c.add(Calendar.DATE, -1);
+		return c;
+	}
+
 }

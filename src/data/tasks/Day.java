@@ -268,4 +268,14 @@ public class Day extends TaskMap<DayTask, WeekTask> {
 		for (tasks = this; tasks != null; tasks = tasks.father)
 			tasks.readTasks();
 	}
+
+	@Override
+	public Calendar firstDay(Calendar cal) {
+		return (Calendar) cal.clone();
+	}
+
+	@Override
+	public Calendar lastDay(Calendar cal) {
+		return (Calendar) cal.clone();
+	}
 }

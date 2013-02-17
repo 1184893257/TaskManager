@@ -91,4 +91,20 @@ public class Year extends TaskMap<YearTask, Task> {
 	public String getPanelBorder(Calendar cal) {
 		return this.getItemByCal(cal);
 	}
+
+	@Override
+	public Calendar firstDay(Calendar cal) {
+		Calendar c = (Calendar) cal.clone();
+		c.set(Calendar.DATE, 1);
+		c.set(Calendar.MONTH, 1 - 1);
+		return c;
+	}
+
+	@Override
+	public Calendar lastDay(Calendar cal) {
+		Calendar c = (Calendar) cal.clone();
+		c.set(Calendar.MONTH, 12 - 1);
+		c.set(Calendar.DATE, 31);
+		return c;
+	}
 }

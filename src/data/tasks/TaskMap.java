@@ -278,6 +278,16 @@ public abstract class TaskMap<E extends Task, K extends Task> {
 	}
 
 	/**
+	 * 本年(月|周|日)的第一天
+	 */
+	public abstract Calendar firstDay(Calendar cal);
+
+	/**
+	 * 本年(月|周|日)的最后一天
+	 */
+	public abstract Calendar lastDay(Calendar cal);
+
+	/**
 	 * 返回此集合的所有可能的上级任务名的集合
 	 * 
 	 * @return

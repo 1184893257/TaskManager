@@ -166,4 +166,18 @@ public class Week extends TaskMap<WeekTask, MonthTask> {
 				+ " ÔÂ " + this.getItemByCal(cal);
 	}
 
+	@Override
+	public Calendar firstDay(Calendar cal) {
+		Calendar c = (Calendar) cal.clone();
+		firstDayofWeek(c);
+		return c;
+	}
+
+	@Override
+	public Calendar lastDay(Calendar cal) {
+		Calendar c = (Calendar) cal.clone();
+		lastDayofWeek(c);
+		return c;
+	}
+
 }
