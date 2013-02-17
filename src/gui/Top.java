@@ -338,34 +338,31 @@ public class Top extends JDialog implements ActionListener, Updater {
 	protected void buildMenu() {
 		menu = new JPopupMenu();
 
-		String[] cmds = { "编辑", "置顶", "退出", "最大", "一般", "最小" };
+		String[] cmds = { "编辑", "置顶", "最大", "一般", "最小" };
 		int i;
 		JMenuItem t;
 		for (i = 0; i < cmds.length; ++i) {
-			if (cmds[i].equals("置顶")) {
-				alwaysTop = new JCheckBoxMenuItem(cmds[i]);
-				alwaysTop.addActionListener(this);
-				menu.add(alwaysTop);
-				continue;
-			}
-			t = new JMenuItem(cmds[i]);
+			if (cmds[i].equals("置顶"))
+				t = alwaysTop = new JCheckBoxMenuItem("置顶");
+			else
+				t = new JMenuItem(cmds[i]);
+
 			t.addActionListener(this);
 			menu.add(t);
-			if (cmds[i].equals("编辑")) {
+
+			if (cmds[i].equals("置顶"))
+				menu.addSeparator();
+			else if (cmds[i].equals("编辑")) {
 				t.setEnabled(false);
 				this.editorMenu = t;
 			}
-			if (i == 2)
-				menu.addSeparator();
 		}
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String cmd = e.getActionCommand();
-		if (cmd.equals("退出")) {
-			this.dispose();
-		} else if (cmd.equals("最大")) {
+		if (cmd.equals("最大")) {
 			this.changeShowMode(BIG);
 		} else if (cmd.equals("一般")) {
 			this.changeShowMode(NORMAL);
