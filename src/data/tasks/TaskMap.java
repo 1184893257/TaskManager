@@ -60,10 +60,13 @@ public abstract class TaskMap<E extends Task, K extends Task> {
 		E d;
 		while (it.hasNext()) {
 			d = it.next().getValue();
-			if (!d.finished) {
-				tasks.put(d.info, d);
-				it.remove();
-			}
+			if (!d.finished)
+				if (d.lastTime == d.needTime)
+					d.finished = true;
+				else {
+					tasks.put(d.info, d);
+					it.remove();
+				}
 		}
 		this.writeTasks();// 把今天的修改写入
 		last.writeTasks();// 把昨天的修改写入

@@ -73,8 +73,8 @@ public class TimePanel extends JPanel {
 	 * @return  ±º‰:∫¡√Î
 	 */
 	public long getTime() {
-		return Integer.parseInt(hourText.getText()) * 3600 * 1000
-				+ Integer.parseInt(minuteText.getText()) * 60 * 1000;
+		return Integer.parseInt(hourText.getText()) * (3600 * 1000L)
+				+ Integer.parseInt(minuteText.getText()) * (60 * 1000L);
 	}
 
 }
