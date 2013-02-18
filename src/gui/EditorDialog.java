@@ -283,6 +283,16 @@ public class EditorDialog extends JDialog implements Updater, ActionListener {
 	}
 
 	/**
+	 * 重设年月周日
+	 */
+	protected void updateDate() {
+		for (int i = 0; i < LEN; ++i) {
+			this.setTasks(i, curDate);
+			this.brothers.set(i, this.getTasks(i).getBrothers(curDate));
+		}
+	}
+
+	/**
 	 * 重新布局编辑窗体<br>
 	 * 窗体中表格可能已经被替换(cur改变了),实现替换
 	 */
