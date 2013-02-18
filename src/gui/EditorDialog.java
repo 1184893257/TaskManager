@@ -199,6 +199,8 @@ public class EditorDialog extends JDialog implements Updater, ActionListener {
 		// 向上按钮
 		upButton = new JButton("up");
 		upButton.addActionListener(this);
+		c.weightx = 0.5;
+		c.anchor = GridBagConstraints.EAST;
 		layout.setConstraints(upButton, c);
 		add(upButton);
 
@@ -206,6 +208,7 @@ public class EditorDialog extends JDialog implements Updater, ActionListener {
 		downBox = new JComboBox<String>();
 		downBox.addActionListener(this);
 		downBox.setEnabled(false);
+		c.anchor = GridBagConstraints.WEST;
 		c.gridx = GridBagConstraints.RELATIVE;
 		c.gridwidth = GridBagConstraints.REMAINDER;
 		layout.setConstraints(downBox, c);
@@ -215,23 +218,33 @@ public class EditorDialog extends JDialog implements Updater, ActionListener {
 		tablePane = new JPanel();
 		tablePane.setLayout(new BorderLayout());
 		c.fill = GridBagConstraints.BOTH;
-		c.gridy = GridBagConstraints.RELATIVE;
+		c.gridy = 1;
 		c.weightx = 1.0;
 		c.weighty = 1.0;
 		layout.setConstraints(tablePane, c);
 		add(tablePane);
 
-		// 平行下拉列表
-		floorBox = new JComboBox<String>(new Vector<String>(brothers.get(cur)
-				.keySet()));
-		floorBox.setSelectedItem(selected[cur]);
-		floorBox.addActionListener(this);
 		c.fill = GridBagConstraints.NONE;
 		c.weighty = 0.0;
-		c.weightx = 0.0;
+		c.weightx = 0.5;
+		c.gridy = 2;
 		c.gridheight = GridBagConstraints.REMAINDER;
-		layout.setConstraints(floorBox, c);
-		add(floorBox);
+
+		// prev
+		JButton button = new JButton("prev");
+		button.addActionListener(this);
+		c.gridwidth = 1;
+		c.anchor = GridBagConstraints.EAST;
+		layout.setConstraints(button, c);
+		add(button);
+
+		// next
+		button = new JButton("next");
+		button.addActionListener(this);
+		c.gridwidth = GridBagConstraints.REMAINDER;
+		c.anchor = GridBagConstraints.WEST;
+		layout.setConstraints(button, c);
+		add(button);
 	}
 
 	/**
@@ -360,6 +373,7 @@ public class EditorDialog extends JDialog implements Updater, ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object source = e.getSource();
+		String cmd = e.getActionCommand();
 		if (source == upButton)// 向上
 			cur--;
 		else if (source == downBox) {// 向下
@@ -368,10 +382,16 @@ public class EditorDialog extends JDialog implements Updater, ActionListener {
 			this.selected[cur] = s;
 			curDate = brothers.get(cur).get(s);
 			this.updateDate();
-		} else {
-			String s = (String) floorBox.getSelectedItem();
-			curSelect(s);
-		}
+		} else if (cmd.equals("prev")) {
+			curDate = this.getTasks(cur).firstDay(curDate);
+			curDate.add(Calendar.DATE, -1);
+			this.updateDate();
+		} else if (cmd.equals("next")) {
+			curDate = this.getTasks(cur).lastDay(curDate);
+			curDate.add(Calendar.DATE, 1);
+			this.updateDate();
+		} else
+			System.err.println("未知的Action事件:" + cmd);
 
 		newView(); // 根据成员变量的值,设置新界面
 	}
