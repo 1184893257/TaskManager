@@ -297,26 +297,8 @@ public class EditorDialog extends JDialog implements Updater, ActionListener {
 	 * 窗体中表格可能已经被替换(cur改变了),实现替换
 	 */
 	protected void newView() {
-		// 继承大小,后面会调用update调整高,所以这里只继承了宽
-		Dimension size = curTable.getSize();
-		curTable = tables.get(cur);
-		curTable.setSize(size);
-
-		// 移除旧表格,装载新表格
-		tablePane.removeAll();
-		tablePane.add(curTable.getTableHeader(), "North");
-		tablePane.add(curTable, "Center");
-		tablePane.setBorder(new TitledBorder(this.getTasks(cur).getPanelBorder(
-				this.curDate)));
-
-		// 设置floorBox
-		// 改变floorBox前移除Action侦听器,以免导致递归调回newView而死循环,最终崩溃
-		floorBox.removeActionListener(this);
-		floorBox.removeAllItems();
-		floorBox.setModel(new DefaultComboBoxModel<String>(new Vector<String>(
-				brothers.get(cur).keySet())));
-		floorBox.setSelectedItem(selected[cur]);
-		floorBox.addActionListener(this);
+		// 设置upButton
+		upButton.setEnabled(cur != 0);
 
 		// 设置downBox
 		if (cur + 1 == LEN)
@@ -331,8 +313,19 @@ public class EditorDialog extends JDialog implements Updater, ActionListener {
 			downBox.addActionListener(this);
 		}
 
-		// 设置upButton
-		upButton.setEnabled(cur != 0);
+		// 继承大小,后面会调用update调整高,所以这里只继承了宽
+		Dimension size = curTable.getSize();
+		curTable = tables.get(cur);
+		curTable.updateJustMe();// 表格数据可能要更新
+		curTable.setSize(size);
+
+		// 移除旧表格,装载新表格
+		tablePane.removeAll();
+		tablePane.add(curTable.getTableHeader(), "North");
+		tablePane.add(curTable, "Center");
+		tablePane.setBorder(new TitledBorder(this.getTasks(cur).getPanelBorder(
+				this.curDate)));
+
 		update();
 	}
 
@@ -372,7 +365,9 @@ public class EditorDialog extends JDialog implements Updater, ActionListener {
 		else if (source == downBox) {// 向下
 			String s = (String) downBox.getSelectedItem();
 			cur++;
-			curSelect(s);
+			this.selected[cur] = s;
+			curDate = brothers.get(cur).get(s);
+			this.updateDate();
 		} else {
 			String s = (String) floorBox.getSelectedItem();
 			curSelect(s);
