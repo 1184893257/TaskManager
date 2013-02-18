@@ -27,10 +27,6 @@ public class EditorDialog extends JDialog implements Updater, ActionListener {
 	 */
 	protected JComboBox<String> downBox;
 	/**
-	 * 平移的下拉选项框
-	 */
-	protected JComboBox<String> floorBox;
-	/**
 	 * 一个放置一个表格的JPanel<br>
 	 * 这个JPanel要设border介绍当前表格是什么时候什么阶段的表格
 	 */
@@ -350,24 +346,6 @@ public class EditorDialog extends JDialog implements Updater, ActionListener {
 		curTable.setPreferredSize(size);
 
 		pack();
-	}
-
-	/**
-	 * 现在选中brothers[cur]作为当前表格,更新一些数据
-	 * 
-	 * @param s
-	 *            选中项
-	 */
-	protected void curSelect(String s) {
-		selected[cur] = s; // 设置选中数组
-		curDate = brothers.get(cur).get(s);// 获得选中项指示的日期
-
-		this.setTasks(cur, curDate); // 读取新任务集合
-		tables.get(cur).updateJustMe();// 更新表格显示
-
-		// 更新brothers[cur+1],父亲不同了孩子也就不同了
-		if (cur + 1 != LEN)
-			brothers.set(cur + 1, this.getTasks(cur + 1).getBrothers(curDate));
 	}
 
 	@Override
