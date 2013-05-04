@@ -41,7 +41,7 @@ public class TaskDialog extends JDialog implements ActionListener {
 	/**
 	 * 可供选择的所有父任务,第一项是无(表示没有父任务)
 	 */
-	protected JComboBox<String> fathers;
+	protected JComboBox fathers;
 
 	// 将各种组件封装在JPanel中,支持热插播O(∩_∩)O~
 	protected JPanel infoPanel;
@@ -137,7 +137,7 @@ public class TaskDialog extends JDialog implements ActionListener {
 		this.fatherPanel.add(label);
 
 		// 添加下拉列表框
-		fathers = new JComboBox<String>();
+		fathers = new JComboBox();
 		c.gridx = GridBagConstraints.RELATIVE;
 		c.gridwidth = GridBagConstraints.REMAINDER;
 		c.fill = GridBagConstraints.BOTH;

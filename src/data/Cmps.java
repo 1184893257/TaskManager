@@ -36,7 +36,7 @@ public class Cmps {
 
 		@Override
 		public int compare(Task o1, Task o2) {
-			return Long.compare(o1.needTime, o2.needTime);
+			return Cmp.compare(o1.needTime, o2.needTime);
 		}
 
 	}
@@ -51,7 +51,7 @@ public class Cmps {
 
 		@Override
 		public int compare(Task o1, Task o2) {
-			return Long.compare(o1.lastTime, o2.lastTime);
+			return Cmp.compare(o1.lastTime, o2.lastTime);
 		}
 
 	}

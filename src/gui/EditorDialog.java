@@ -25,7 +25,7 @@ public class EditorDialog extends JDialog implements Updater, ActionListener {
 	/**
 	 * 向下的下拉选项框
 	 */
-	protected JComboBox<String> downBox;
+	protected JComboBox downBox;
 	/**
 	 * 一个放置一个表格的JPanel<br>
 	 * 这个JPanel要设border介绍当前表格是什么时候什么阶段的表格
@@ -201,7 +201,7 @@ public class EditorDialog extends JDialog implements Updater, ActionListener {
 		add(upButton);
 
 		// 向下下拉框
-		downBox = new JComboBox<String>();
+		downBox = new JComboBox();
 		downBox.addActionListener(this);
 		downBox.setEnabled(false);
 		c.anchor = GridBagConstraints.WEST;
@@ -315,7 +315,7 @@ public class EditorDialog extends JDialog implements Updater, ActionListener {
 		else {
 			downBox.removeActionListener(this);
 			downBox.removeAllItems();
-			downBox.setModel(new DefaultComboBoxModel<String>(
+			downBox.setModel(new DefaultComboBoxModel(
 					new Vector<String>(brothers.get(cur + 1).keySet())));
 			downBox.setEnabled(true);
 			downBox.setSelectedItem(selected[cur + 1]);
